@@ -5,22 +5,42 @@
   "keywords": [
     "eslint",
     "eslintplugin",
-    "eslint-plugin"
+    "eslint-plugin",
+    "libram"
   ],
   "author": "Patrick Hulin",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "mocha tests --recursive"
+    "build": "yarn run tsc",
+    "clean": "rm -f {lib,dist,tests}/*.js {lib,dist,tests}/*.d.ts {lib,dist,tests}/**/*.js {lib,dist,tests}/**/*.d.ts",
+    "docs": "yarn run typedoc",
+    "format": "yarn run prettier --write src/**/* examples/**/*",
+    "lint": "yarn run eslint lib tests/lib --ext .ts",
+    "prepublishOnly": "yarn run build",
+    "test": "mocha tests --recursive --extension ts --require ts-node/register",
+    "watch": "yarn run tsc --watch"
   },
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts"
+  ],
   "dependencies": {
     "requireindex": "~1.1.0"
   },
   "devDependencies": {
-    "eslint": "^7.1.0",
-    "mocha": "^7.2.0"
+    "@types/eslint": "^7.28.0",
+    "@types/estree": "^0.0.50",
+    "@types/node": "^16.4.0",
+    "@types/requireindex": "^1.2.0",
+    "@typescript-eslint/parser": "^4.28.4",
+    "eslint": "^7.31.0",
+    "mocha": "^7.2.0",
+    "prettier": "^2.3.2",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
   },
   "engines": {
     "node": ">=0.10.0"
   },
-  "license": "ISC"
+  "license": "MIT"
 }

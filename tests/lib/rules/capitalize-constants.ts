@@ -2,36 +2,33 @@
  * @fileoverview Capitalize enumerated type constants.
  * @author Patrick Hulin
  */
-"use strict";
 
 //------------------------------------------------------------------------------
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require("../../../lib/rules/capitalize-constants"),
-
-    RuleTester = require("eslint").RuleTester;
-
+import rule from "../../../lib/rules/capitalize-constants";
+import { RuleTester } from "eslint";
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-var ruleTester = new RuleTester();
+const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
 ruleTester.run("capitalize-constants", rule, {
+  valid: [
+    // give me some code that won't trigger a warning
+  ],
 
-    valid: [
-
-        // give me some code that won't trigger a warning
-    ],
-
-    invalid: [
+  invalid: [
+    {
+      code: "$item`Hair Spray`",
+      errors: [
         {
-            code: "$item`Hair Spray`",
-            errors: [{
-                message: "Fill me in.",
-                type: "Me too"
-            }]
-        }
-    ]
+          message: "Fill me in.",
+          type: "Me too",
+        },
+      ],
+    },
+  ],
 });
