@@ -22,9 +22,11 @@
   },
   "files": [
     "dist/**/*.js",
-    "dist/**/*.d.ts"
+    "dist/**/*.d.ts",
+    "data/items.json"
   ],
   "dependencies": {
+    "html-entities": "^2.3.2",
     "requireindex": "~1.1.0"
   },
   "devDependencies": {
@@ -35,6 +37,7 @@
     "@typescript-eslint/parser": "^4.28.4",
     "eslint": "^7.31.0",
     "mocha": "^7.2.0",
+    "node-fetch": "^2.6.1",
     "prettier": "^2.3.2",
     "ts-node": "^10.1.0",
     "typescript": "^4.3.5"
