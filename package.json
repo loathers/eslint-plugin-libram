@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-libram",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Eslint rules for Libram",
   "keywords": [
     "eslint",
@@ -23,7 +23,7 @@
   "files": [
     "dist/**/*.js",
     "dist/**/*.d.ts",
-    "data/items.json"
+    "data/*.json"
   ],
   "dependencies": {
     "html-entities": "^2.3.2",
