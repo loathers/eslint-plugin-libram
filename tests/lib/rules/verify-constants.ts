@@ -59,6 +59,9 @@ ruleTester.run("verify-constants", rule, {
     {
       code: "$items` ${'hair spray'} `",
     },
+    {
+      code: "$skill`Fat Leon's Phat Loot Lyric`",
+    },
   ],
 
   invalid: [
@@ -107,6 +110,16 @@ ruleTester.run("verify-constants", rule, {
         },
         {
           message: 'Unrecognized enumerated value name "Too"',
+        },
+      ],
+    },
+    {
+      code: "$skill`fat leon's phat loot lyric`",
+      output: "$skill`Fat Leon's Phat Loot Lyric`",
+      errors: [
+        {
+          message:
+            'Enumerated value name "fat leon\'s phat loot lyric" should be capitalized "Fat Leon\'s Phat Loot Lyric".',
         },
       ],
     },

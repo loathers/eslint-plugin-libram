@@ -17,12 +17,6 @@ async function getMafiaData(path) {
 }
 
 async function main() {
-  const itemLines = await getMafiaData("items.txt");
-  const items = itemLines
-    .map((line) => line.split("\t")[1])
-    .filter((name) => name);
-  fs.writeFileSync("data/items.json", JSON.stringify(items));
-
   const effectLines = await getMafiaData("statuseffects.txt");
   const effects = effectLines
     .map((line) => line.split("\t")[1])
@@ -35,11 +29,23 @@ async function main() {
     .filter((name) => name);
   fs.writeFileSync("data/familiars.json", JSON.stringify(familiars));
 
+  const itemLines = await getMafiaData("items.txt");
+  const items = itemLines
+    .map((line) => line.split("\t")[1])
+    .filter((name) => name);
+  fs.writeFileSync("data/items.json", JSON.stringify(items));
+
   const monsterLines = await getMafiaData("monsters.txt");
   const monsters = monsterLines
     .map((line) => line.split("\t")[0])
     .filter((name) => name);
   fs.writeFileSync("data/monsters.json", JSON.stringify(monsters));
+
+  const skillLines = await getMafiaData("classskills.txt");
+  const skills = skillLines
+    .map((line) => line.split("\t")[1])
+    .filter((name) => name);
+  fs.writeFileSync("data/skills.json", JSON.stringify(skills));
 }
 
 main();

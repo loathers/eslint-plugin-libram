@@ -31,6 +31,7 @@ const tags = [
   new TagInfo("$familiar", "$familiars", getJsonData("familiars.json")),
   new TagInfo("$item", "$items", getJsonData("items.json")),
   new TagInfo("$monster", "$monsters", getJsonData("monsters.json")),
+  new TagInfo("$skill", "$skills", getJsonData("skills.json")),
 ];
 
 const singularTags = new Map<string, TagInfo>(
