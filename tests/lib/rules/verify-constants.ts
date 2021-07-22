@@ -48,7 +48,7 @@ ruleTester.run("verify-constants", rule, {
       code: "$effect`Video... Games?`",
     },
     {
-      code: "$items`hair spray, Newbiesport™ tent, bugged bÃ¶n±Ã©t  `",
+      code: "$items`hair spray,Newbiesport™ tent,   bugged bÃ¶n±Ã©t  `",
     },
     {
       code: "$effects`And Your Family\\, Too, Sugar Rush`",
@@ -58,6 +58,7 @@ ruleTester.run("verify-constants", rule, {
   invalid: [
     {
       code: "$item`Hair Spray`",
+      output: "$item`hair spray`",
       errors: [
         {
           message:
@@ -67,6 +68,7 @@ ruleTester.run("verify-constants", rule, {
     },
     {
       code: "$item`Newbiesport&trade; tent`",
+      output: "$item`Newbiesport™ tent`",
       errors: [
         {
           message:
@@ -76,6 +78,7 @@ ruleTester.run("verify-constants", rule, {
     },
     {
       code: "$items`Hair Spray, Newbiesport&trade; tent, buged bÃ¶n±Ã©t  `",
+      output: "$items`hair spray, Newbiesport™ tent, buged bÃ¶n±Ã©t  `",
       errors: [
         {
           message:
