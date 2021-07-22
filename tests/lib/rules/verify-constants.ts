@@ -21,11 +21,19 @@ ruleTester.run("verify-constants", rule, {
       code: "$item`hair spray`",
     },
     {
+      options: [{ ignoreCapitalization: true }],
+      code: "$item`Hair Spray`",
+    },
+    {
       code: "$item`Newbiesport™ tent`",
     },
     {
-      options: [{ ignoreCapitalization: true }],
-      code: "$item`Hair Spray`",
+      options: [{ ignoreEntities: true }],
+      code: "$item`Newbiesport&trade; tent`",
+    },
+    {
+      options: [{ ignoreUnrecognized: true }],
+      code: "$item`kfljdafoeiq`",
     },
     {
       code: "$item`bugged bÃ¶n±Ã©t`",

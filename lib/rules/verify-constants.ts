@@ -56,7 +56,15 @@ const rule: Rule.RuleModule = {
         properties: {
           ignoreCapitalization: {
             type: "boolean",
-            default: "false",
+            default: false,
+          },
+          ignoreEntities: {
+            type: "boolean",
+            default: false,
+          },
+          ignoreUnrecognized: {
+            type: "boolean",
+            default: false,
           },
         },
         additionalProperties: false,
@@ -66,6 +74,7 @@ const rule: Rule.RuleModule = {
 
   create(context: Rule.RuleContext) {
     const sourceCode = context.getSourceCode();
+    const options = context.options[0];
 
     return {
       TaggedTemplateExpression(
@@ -95,20 +104,22 @@ const rule: Rule.RuleModule = {
 
             if (properlyCapitalized === undefined) {
               if (tagInfo.caseMap.has(decodeEntities(segment).toLowerCase())) {
-                context.report({
-                  node,
-                  message: `Enumerated value "${segment}" has HTML entities; should be "${decodeEntities(
-                    segment
-                  )}".`,
-                });
-              } else {
+                if (!options?.ignoreEntities) {
+                  context.report({
+                    node,
+                    message: `Enumerated value "${segment}" has HTML entities; should be "${decodeEntities(
+                      segment
+                    )}".`,
+                  });
+                }
+              } else if (!options?.ignoreUnrecognized) {
                 context.report({
                   node,
                   message: `Unrecognized enumerated value name "${segment}"`,
                 });
               }
             } else if (
-              !context.options[0]?.ignoreCapitalization &&
+              !options?.ignoreCapitalization &&
               segment !== properlyCapitalized
             ) {
               context.report({
