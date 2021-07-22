@@ -36,6 +36,15 @@ ruleTester.run("verify-constants", rule, {
     {
       code: "$familiar`Angry Goat`",
     },
+    {
+      code: "$effect`Video... Games?`",
+    },
+    {
+      code: "$items`hair spray, Newbiesport™ tent, bugged bÃ¶n±Ã©t  `",
+    },
+    {
+      code: "$effects`And Your Family\\, Too, Sugar Rush`",
+    },
   ],
 
   invalid: [
@@ -54,6 +63,33 @@ ruleTester.run("verify-constants", rule, {
         {
           message:
             'Enumerated value "Newbiesport&trade; tent" has HTML entities; should be "Newbiesport™ tent".',
+        },
+      ],
+    },
+    {
+      code: "$items`Hair Spray, Newbiesport&trade; tent, buged bÃ¶n±Ã©t  `",
+      errors: [
+        {
+          message:
+            'Enumerated value name "Hair Spray" should be capitalized "hair spray".',
+        },
+        {
+          message:
+            'Enumerated value "Newbiesport&trade; tent" has HTML entities; should be "Newbiesport™ tent".',
+        },
+        {
+          message: 'Unrecognized enumerated value name "buged bÃ¶n±Ã©t"',
+        },
+      ],
+    },
+    {
+      code: "$effects`And Your Family, Too`",
+      errors: [
+        {
+          message: 'Unrecognized enumerated value name "And Your Family"',
+        },
+        {
+          message: 'Unrecognized enumerated value name "Too"',
         },
       ],
     },

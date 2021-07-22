@@ -1,19 +1,7 @@
-/**
- * @fileoverview Capitalize enumerated type constants.
- * @author Patrick Hulin
- */
-
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
-
 import { Rule } from "eslint";
 import * as ESTree from "estree";
 import { readFileSync } from "fs";
-import {
-  decode as decodeEntities,
-  encode as encodeEntities,
-} from "html-entities";
+import { decode as decodeEntities } from "html-entities";
 
 class TagInfo {
   singular: string;
@@ -87,18 +75,24 @@ const rule: Rule.RuleModule = {
         const singular = singularTagList.includes(tagText);
         const plural = pluralTagList.includes(tagText);
         if (!singular && !plural) return;
+
         const tagInfo = singular
           ? singularTags.get(tagText)!
           : pluralTags.get(tagText)!;
+
         for (const quasi of node.quasi.quasis) {
-          // FIXME: Remove backslashes.
-          const segments = plural
-            ? quasi.value.raw.split(/(?<!\\),/g).map((s) => s.trim())
+          const segmentsRaw = plural
+            ? quasi.value.raw.split(/(?<!(?<!\\)\\),/g).map((s) => s.trim())
             : [quasi.value.raw];
+          const segments = segmentsRaw.map((raw) =>
+            raw.replace(/(?<!\\)\\,/, ",")
+          );
+
           for (const segment of segments) {
             const properlyCapitalized = tagInfo.caseMap.get(
               segment.toLowerCase()
             );
+
             if (properlyCapitalized === undefined) {
               if (tagInfo.caseMap.has(decodeEntities(segment).toLowerCase())) {
                 context.report({
