@@ -169,7 +169,7 @@ const rule: Rule.RuleModule = {
                     },
                   });
                 }
-              } else if (!options?.ignoreUnrecognized) {
+              } else if (!options?.ignoreUnrecognized && segment !== "") {
                 context.report({
                   node,
                   message: `Unrecognized enumerated value name "${segment}"`,

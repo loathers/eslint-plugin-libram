@@ -53,6 +53,12 @@ ruleTester.run("verify-constants", rule, {
     {
       code: "$effects`And Your Family\\, Too, Sugar Rush`",
     },
+    {
+      code: "$items``",
+    },
+    {
+      code: "$items` ${'hair spray'} `",
+    },
   ],
 
   invalid: [
