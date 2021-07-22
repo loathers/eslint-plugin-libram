@@ -1,21 +1,24 @@
 # Capitalize enumerated type constants. (capitalize-constants)
 
-Please describe the origin of the rule here.
+Inconsistent capitalization among enumerated value names is distracting for readers of KoLmafia typescript scripts.
 
 ## Rule Details
 
-This rule aims to...
+This rule aims to catch invalid or improperly formatted item, effect, familiar, and monster names.
 
 Examples of **incorrect** code for this rule:
 
 ```js
-// fill me in
+$item`Hair Spray`;
+$item`Newbiesport&trade; tent`;
+$item`lkjfdsljdf`;
 ```
 
 Examples of **correct** code for this rule:
 
 ```js
-// fill me in
+$item`hair spray`;
+$item`Newbiesport™ tent`;
 ```
 
 ### Options
