@@ -191,6 +191,25 @@ const rule: Rule.RuleModule = {
               });
             }
           }
+
+          // FIXME: Allow on separate lines.
+          const properlySpaced = segments
+            .map(([segmentRaw, ,]) => segmentRaw)
+            .join(", ");
+          if (quasi.value.raw !== properlySpaced) {
+            context.report({
+              node,
+              message:
+                "Enumerated value constants should be separated by a comma and space.",
+              fix(fixer) {
+                const [start, end] = quasi.range!;
+                return fixer.replaceTextRange(
+                  [start + 1, end - 1],
+                  properlySpaced
+                );
+              },
+            });
+          }
         }
       },
     };

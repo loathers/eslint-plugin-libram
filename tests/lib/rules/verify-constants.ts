@@ -48,7 +48,7 @@ ruleTester.run("verify-constants", rule, {
       code: "$effect`Video... Games?`",
     },
     {
-      code: "$items`hair spray,Newbiesport™ tent,   bugged bÃ¶n±Ã©t  `",
+      code: "$items`hair spray, Newbiesport™ tent, bugged bÃ¶n±Ã©t`",
     },
     {
       code: "$effects`And Your Family\\, Too, Sugar Rush`",
@@ -57,7 +57,7 @@ ruleTester.run("verify-constants", rule, {
       code: "$items``",
     },
     {
-      code: "$items` ${'hair spray'} `",
+      code: "$items`${'hair spray'}`",
     },
     {
       code: "$skill`Fat Leon's Phat Loot Lyric`",
@@ -92,8 +92,8 @@ ruleTester.run("verify-constants", rule, {
       ],
     },
     {
-      code: "$items`Hair Spray, Newbiesport&trade; tent, buged bÃ¶n±Ã©t  `",
-      output: "$items`hair spray, Newbiesport™ tent, buged bÃ¶n±Ã©t  `",
+      code: "$items`Hair Spray, Newbiesport&trade; tent, buged bÃ¶n±Ã©t`",
+      output: "$items`hair spray, Newbiesport™ tent, buged bÃ¶n±Ã©t`",
       errors: [
         {
           message:
@@ -146,6 +146,16 @@ ruleTester.run("verify-constants", rule, {
         {
           message:
             'Enumerated value name "the middle chamber" should be capitalized "The Middle Chamber".',
+        },
+      ],
+    },
+    {
+      code: "$items` hair spray,glittery mascara,\t   Ben-Gal™ Balm   `",
+      output: "$items`hair spray, glittery mascara, Ben-Gal™ Balm`",
+      errors: [
+        {
+          message:
+            "Enumerated value constants should be separated by a comma and space.",
         },
       ],
     },
