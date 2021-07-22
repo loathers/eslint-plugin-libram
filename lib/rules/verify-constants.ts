@@ -27,9 +27,11 @@ function getJsonData(filename: string) {
 }
 
 const tags = [
+  new TagInfo("$class", "$classes", getJsonData("classes.json")),
   new TagInfo("$effect", "$effects", getJsonData("effects.json")),
   new TagInfo("$familiar", "$familiars", getJsonData("familiars.json")),
   new TagInfo("$item", "$items", getJsonData("items.json")),
+  new TagInfo("$location", "$locations", getJsonData("locations.json")),
   new TagInfo("$monster", "$monsters", getJsonData("monsters.json")),
   new TagInfo("$skill", "$skills", getJsonData("skills.json")),
 ];

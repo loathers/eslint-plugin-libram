@@ -35,6 +35,12 @@ async function main() {
     .filter((name) => name);
   fs.writeFileSync("data/items.json", JSON.stringify(items));
 
+  const locationLines = await getMafiaData("adventures.txt");
+  const locations = locationLines
+    .map((line) => line.split("\t")[3])
+    .filter((name) => name);
+  fs.writeFileSync("data/locations.json", JSON.stringify(locations));
+
   const monsterLines = await getMafiaData("monsters.txt");
   const monsters = monsterLines
     .map((line) => line.split("\t")[0])

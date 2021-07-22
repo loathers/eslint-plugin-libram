@@ -62,6 +62,12 @@ ruleTester.run("verify-constants", rule, {
     {
       code: "$skill`Fat Leon's Phat Loot Lyric`",
     },
+    {
+      code: "$class`Vampyre`",
+    },
+    {
+      code: "$location`The Middle Chamber`",
+    },
   ],
 
   invalid: [
@@ -120,6 +126,26 @@ ruleTester.run("verify-constants", rule, {
         {
           message:
             'Enumerated value name "fat leon\'s phat loot lyric" should be capitalized "Fat Leon\'s Phat Loot Lyric".',
+        },
+      ],
+    },
+    {
+      code: "$class`vampyre`",
+      output: "$class`Vampyre`",
+      errors: [
+        {
+          message:
+            'Enumerated value name "vampyre" should be capitalized "Vampyre".',
+        },
+      ],
+    },
+    {
+      code: "$location`the middle chamber`",
+      output: "$location`The Middle Chamber`",
+      errors: [
+        {
+          message:
+            'Enumerated value name "the middle chamber" should be capitalized "The Middle Chamber".',
         },
       ],
     },
