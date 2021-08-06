@@ -26,14 +26,14 @@ async function main() {
     .filter((line) => line.name);
   const effectsReadOnly = { ...parsedEffects };
   const count = Object.keys(effectsReadOnly).length;
+  const disambiguate = (effect) => {
+    if (effect.edited) return;
+    effect.name = `[${effect.id}]${effect.name}`;
+    effect.edited = true;
+  };
   for (let i = 0; i < count - 1; ++i) {
     for (let j = i + 1; j < count; ++j) {
       if (effectsReadOnly[i].name === effectsReadOnly[j].name) {
-        const disambiguate = (e) => {
-          if (e.edited) return;
-          e.name = `[${e.id}]${e.name}`;
-          e.edited = true;
-        };
         disambiguate(parsedEffects[i]);
         disambiguate(parsedEffects[j]);
       }
