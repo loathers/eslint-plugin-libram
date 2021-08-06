@@ -18,9 +18,28 @@ async function getMafiaData(path) {
 
 async function main() {
   const effectLines = await getMafiaData("statuseffects.txt");
-  const effects = effectLines
-    .map((line) => line.split("\t")[1])
-    .filter((name) => name);
+  const parsedEffects = effectLines
+    .map((line) => {
+      const split = line.split("\t");
+      return { id: split[0], name: split[1], edited: false };
+    })
+    .filter((line) => line.name);
+  const effectsReadOnly = { ...parsedEffects };
+  const count = Object.keys(effectsReadOnly).length;
+  for (let i = 0; i < count - 1; ++i) {
+    for (let j = i + 1; j < count; ++j) {
+      if (effectsReadOnly[i].name === effectsReadOnly[j].name) {
+        const disambiguate = (e) => {
+          if (e.edited) return;
+          e.name = `[${e.id}]${e.name}`;
+          e.edited = true;
+        };
+        disambiguate(parsedEffects[i]);
+        disambiguate(parsedEffects[j]);
+      }
+    }
+  }
+  const effects = parsedEffects.map((line) => line.name);
   fs.writeFileSync("data/effects.json", JSON.stringify(effects));
 
   const familiarLines = await getMafiaData("familiars.txt");
