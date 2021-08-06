@@ -150,9 +150,8 @@ const rule: Rule.RuleModule = {
               sourceCode.getIndexFromLoc(end),
             ];
             const segment = segmentRaw.replace(/(?<!\\)\\,/, ",");
-            const properlyCapitalized = tagInfo.caseMap.get(
-              segment.toLowerCase()
-            );
+            const lowerCaseSegment = segment.toLowerCase();
+            const properlyCapitalized = tagInfo.caseMap.get(lowerCaseSegment);
 
             if (properlyCapitalized === undefined) {
               const decoded = decodeEntities(segment);
@@ -173,9 +172,16 @@ const rule: Rule.RuleModule = {
                   });
                 }
               } else if (!options?.ignoreUnrecognized && segment !== "") {
+                let suggestion = "";
+                for (const data of tagInfo.data) {
+                  if (data.toLowerCase().includes(lowerCaseSegment)) {
+                    suggestion = `. Maybe you want "${data}"?`;
+                    break;
+                  }
+                }
                 context.report({
                   node,
-                  message: `Unrecognized enumerated value name "${segment}"`,
+                  message: `Unrecognized enumerated value name "${segment}"${suggestion}`,
                 });
               }
             } else if (
