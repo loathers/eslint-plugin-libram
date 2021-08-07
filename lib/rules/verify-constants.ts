@@ -172,23 +172,18 @@ const rule: Rule.RuleModule = {
                   });
                 }
               } else if (!options?.ignoreUnrecognized && segment !== "") {
-                const options: string[] = [];
-                for (const data of tagInfo.data) {
-                  if (data.toLowerCase().includes(lowerCaseSegment)) {
-                    options.push(data);
-                  }
-                }
+                const options = tagInfo.data.filter((data) =>
+                  data.toLowerCase().includes(lowerCaseSegment)
+                );
                 if (options.length > 1) {
-                  const suggestions = options.map(
-                    (opt): Rule.SuggestionReportDescriptor => {
-                      return {
-                        desc: `Change enumerated value to ${opt}`,
-                        fix: (fixer: Rule.RuleFixer) => {
-                          return fixer.replaceTextRange(range, opt);
-                        },
-                      };
-                    }
-                  );
+                  const suggestions = options.map((opt) => {
+                    return {
+                      desc: `Change enumerated value to ${opt}`,
+                      fix: (fixer: Rule.RuleFixer) => {
+                        return fixer.replaceTextRange(range, opt);
+                      },
+                    };
+                  });
                   context.report({
                     node,
                     message: `Ambiguous value name "${segment}"`,
