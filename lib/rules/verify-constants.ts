@@ -172,17 +172,42 @@ const rule: Rule.RuleModule = {
                   });
                 }
               } else if (!options?.ignoreUnrecognized && segment !== "") {
-                let suggestion = "";
+                const options: string[] = [];
                 for (const data of tagInfo.data) {
                   if (data.toLowerCase().includes(lowerCaseSegment)) {
-                    suggestion = `. Maybe you want "${data}"?`;
-                    break;
+                    options.push(data);
                   }
                 }
-                context.report({
-                  node,
-                  message: `Unrecognized enumerated value name "${segment}"${suggestion}`,
-                });
+                if (options.length > 1) {
+                  const suggestions = options.map(
+                    (opt): Rule.SuggestionReportDescriptor => {
+                      return {
+                        desc: `Change enumerated value to ${opt}`,
+                        fix: (fixer: Rule.RuleFixer) => {
+                          return fixer.replaceTextRange(range, opt);
+                        },
+                      };
+                    }
+                  );
+                  context.report({
+                    node,
+                    message: `Ambiguous value name "${segment}"`,
+                    suggest: suggestions,
+                  });
+                } else if (options.length > 0) {
+                  context.report({
+                    node,
+                    message: `Enumerated value "${segment}" should be "${options[0]}"`,
+                    fix(fixer) {
+                      return fixer.replaceTextRange(range, options[0]);
+                    },
+                  });
+                } else {
+                  context.report({
+                    node,
+                    message: `Unrecognized enumerated value name "${segment}"`,
+                  });
+                }
               }
             } else if (
               !options?.ignoreCapitalization &&
