@@ -172,15 +172,15 @@ const rule: Rule.RuleModule = {
                   });
                 }
               } else if (!options?.ignoreUnrecognized && segment !== "") {
-                const options = tagInfo.data.filter((data) =>
+                const disambiguations = tagInfo.data.filter((data) =>
                   data.toLowerCase().includes(lowerCaseSegment)
                 );
-                if (options.length > 1) {
-                  const suggestions = options.map((opt) => {
+                if (disambiguations.length > 1) {
+                  const suggestions = disambiguations.map((dis) => {
                     return {
-                      desc: `Change enumerated value to ${opt}`,
+                      desc: `Change enumerated value to ${dis}`,
                       fix: (fixer: Rule.RuleFixer) => {
-                        return fixer.replaceTextRange(range, opt);
+                        return fixer.replaceTextRange(range, dis);
                       },
                     };
                   });
@@ -189,12 +189,16 @@ const rule: Rule.RuleModule = {
                     message: `Ambiguous value name "${segment}"`,
                     suggest: suggestions,
                   });
-                } else if (options.length > 0) {
+                } else if (
+                  // Effect names with commas such as $effects`And Your Family, Too` are a degenerate case
+                  disambiguations.length > 0 &&
+                  (!plural || !disambiguations[0].includes(","))
+                ) {
                   context.report({
                     node,
-                    message: `Enumerated value "${segment}" should be "${options[0]}"`,
+                    message: `Enumerated value "${segment}" should be "${disambiguations[0]}"`,
                     fix(fixer) {
-                      return fixer.replaceTextRange(range, options[0]);
+                      return fixer.replaceTextRange(range, disambiguations[0]);
                     },
                   });
                 } else {
