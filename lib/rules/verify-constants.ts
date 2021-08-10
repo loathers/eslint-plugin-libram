@@ -93,6 +93,7 @@ const rule: Rule.RuleModule = {
       const end = positionAdd(quasi.loc!.end, -endOffset - 1);
 
       const result: [string, ESTree.Position, ESTree.Position][] = [];
+      if (quasi.value.raw.length - endOffset === 0) return result;
 
       let match = null;
       let lastMatch: RegExpExecArray | null = null;

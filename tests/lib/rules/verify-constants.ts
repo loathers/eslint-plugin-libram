@@ -71,6 +71,9 @@ ruleTester.run("verify-constants", rule, {
     {
       code: "$effect`[597]A Little Bit Evil`",
     },
+    {
+      code: "$effect``",
+    },
   ],
 
   invalid: [
