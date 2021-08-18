@@ -3,19 +3,49 @@ import * as ESTree from "estree";
 import { readFileSync } from "fs";
 import { decode as decodeEntities } from "html-entities";
 
+// Minimum length of substrings before checking for matches.
+const SUBSTRING_MIN_LENGTH = 5;
+
 class TagInfo {
   singular: string;
   plural: string;
   data: string[];
   caseMap: Map<string, string>;
+  prefixSuffixMap: Map<string, string[]>;
 
   constructor(singular: string, plural: string, data: string[]) {
     const dataParsed = ["none", ...data.map((s) => decodeEntities(s))];
     this.singular = singular;
     this.plural = plural;
     this.data = dataParsed;
-    this.caseMap = new Map<string, string>(
-      dataParsed.map((s) => [s.toLowerCase(), s])
+    this.caseMap = new Map(dataParsed.map((s) => [s.toLowerCase(), s]));
+
+    const prefixSuffixSetMap = new Map<string, Set<string>>();
+    for (const element of dataParsed) {
+      const elementLower = element.toLowerCase();
+      const indices = Array.from(new Array(element.length).keys()).slice(
+        SUBSTRING_MIN_LENGTH
+      );
+      for (const index of indices) {
+        for (const substring of [
+          elementLower.slice(element.length - index),
+          elementLower.slice(0, index),
+        ]) {
+          let wholeStrings = prefixSuffixSetMap.get(substring);
+          if (!wholeStrings) {
+            wholeStrings = new Set();
+            prefixSuffixSetMap.set(substring, wholeStrings);
+          }
+          wholeStrings.add(element);
+        }
+      }
+    }
+
+    this.prefixSuffixMap = new Map(
+      Array.from(prefixSuffixSetMap.entries()).map(([k, v]) => [
+        k,
+        Array.from(v),
+      ])
     );
   }
 }
@@ -39,11 +69,9 @@ const tags = [
 const singularTags = new Map<string, TagInfo>(
   tags.map((tagInfo) => [tagInfo.singular, tagInfo])
 );
-const singularTagList = Array.from(singularTags.keys());
 const pluralTags = new Map<string, TagInfo>(
   tags.map((tagInfo) => [tagInfo.plural, tagInfo])
 );
-const pluralTagList = Array.from(pluralTags.keys());
 
 const rule: Rule.RuleModule = {
   meta: {
@@ -93,7 +121,6 @@ const rule: Rule.RuleModule = {
       const end = positionAdd(quasi.loc!.end, -endOffset - 1);
 
       const result: [string, ESTree.Position, ESTree.Position][] = [];
-      if (quasi.value.raw.length - endOffset === 0) return result;
 
       let match = null;
       let lastMatch: RegExpExecArray | null = null;
@@ -132,18 +159,15 @@ const rule: Rule.RuleModule = {
         node: ESTree.TaggedTemplateExpression & Rule.NodeParentExtension
       ) {
         const tagText = sourceCode.getText(node.tag);
-        const singular = singularTagList.includes(tagText);
-        const plural = pluralTagList.includes(tagText);
-        if (!singular && !plural) return;
-
-        const tagInfo = singular
-          ? singularTags.get(tagText)!
-          : pluralTags.get(tagText)!;
+        const singular = singularTags.get(tagText);
+        const plural = pluralTags.get(tagText);
+        const tagElements = singular ?? plural;
+        if (!tagElements) return;
 
         for (const quasi of node.quasi.quasis) {
           const segments = plural
             ? splitWithLocation(quasi, /\s*(?<!(?<!\\)\\),\s*/g)
-            : splitWithLocation(quasi, /$^/g);
+            : splitWithLocation(quasi, /(?!)/g); // Never matches - don't split.
 
           for (const [segmentRaw, start, end] of segments) {
             const range: [number, number] = [
@@ -152,11 +176,14 @@ const rule: Rule.RuleModule = {
             ];
             const segment = segmentRaw.replace(/(?<!\\)\\,/, ",");
             const lowerCaseSegment = segment.toLowerCase();
-            const properlyCapitalized = tagInfo.caseMap.get(lowerCaseSegment);
+            const properlyCapitalized =
+              tagElements.caseMap.get(lowerCaseSegment);
+            const disambiguations =
+              tagElements.prefixSuffixMap.get(lowerCaseSegment);
 
             if (properlyCapitalized === undefined) {
               const decoded = decodeEntities(segment);
-              const decodedProperlyCapitalized = tagInfo.caseMap.get(
+              const decodedProperlyCapitalized = tagElements.caseMap.get(
                 decoded.toLowerCase()
               );
               if (decodedProperlyCapitalized !== undefined) {
@@ -172,42 +199,43 @@ const rule: Rule.RuleModule = {
                     },
                   });
                 }
-              } else if (!options?.ignoreUnrecognized && segment !== "") {
-                const disambiguations = tagInfo.data.filter((data) =>
-                  data.toLowerCase().includes(lowerCaseSegment)
-                );
-                if (disambiguations.length > 1) {
-                  const suggestions = disambiguations.map((dis) => {
-                    return {
-                      desc: `Change enumerated value to ${dis}`,
-                      fix: (fixer: Rule.RuleFixer) => {
-                        return fixer.replaceTextRange(range, dis);
-                      },
-                    };
-                  });
-                  context.report({
-                    node,
-                    message: `Ambiguous value name "${segment}"`,
-                    suggest: suggestions,
-                  });
-                } else if (
-                  // Effect names with commas such as $effects`And Your Family, Too` are a degenerate case
-                  disambiguations.length > 0 &&
-                  (!plural || !disambiguations[0].includes(","))
-                ) {
-                  context.report({
-                    node,
-                    message: `Enumerated value "${segment}" should be "${disambiguations[0]}"`,
-                    fix(fixer) {
-                      return fixer.replaceTextRange(range, disambiguations[0]);
+              } else if (disambiguations && disambiguations.length > 1) {
+                const suggestions = disambiguations.map((dis) => {
+                  return {
+                    desc: `Change enumerated value to ${dis}`,
+                    fix: (fixer: Rule.RuleFixer) => {
+                      return fixer.replaceTextRange(
+                        range,
+                        dis.replace(",", "\\,")
+                      );
                     },
-                  });
-                } else {
-                  context.report({
-                    node,
-                    message: `Unrecognized enumerated value name "${segment}"`,
-                  });
-                }
+                  };
+                });
+                context.report({
+                  node,
+                  message: `Ambiguous value name "${segment}".`,
+                  suggest: suggestions,
+                });
+              } else if (
+                // Effect names with commas such as $effects`And Your Family, Too` are a degenerate case
+                disambiguations &&
+                disambiguations.length > 0
+              ) {
+                context.report({
+                  node,
+                  message: `Enumerated value "${segment}" should be "${disambiguations[0]}".`,
+                  fix(fixer) {
+                    return fixer.replaceTextRange(
+                      range,
+                      disambiguations[0].replace(",", "\\,")
+                    );
+                  },
+                });
+              } else if (!options?.ignoreUnrecognized && segment !== "") {
+                context.report({
+                  node,
+                  message: `Unrecognized enumerated value name "${segment}".`,
+                });
               }
             } else if (
               !options?.ignoreCapitalization &&

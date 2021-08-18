@@ -110,18 +110,20 @@ ruleTester.run("verify-constants", rule, {
             'Enumerated value "Newbiesport&trade; tent" has HTML entities; should be "Newbiesport™ tent".',
         },
         {
-          message: 'Unrecognized enumerated value name "buged bÃ¶n±Ã©t"',
+          message: 'Unrecognized enumerated value name "buged bÃ¶n±Ã©t".',
         },
       ],
     },
     {
       code: "$effects`And Your Family, Too`",
+      output: "$effects`And Your Family\\, Too, Too`",
       errors: [
         {
-          message: 'Unrecognized enumerated value name "And Your Family"',
+          message:
+            'Enumerated value "And Your Family" should be "And Your Family, Too".',
         },
         {
-          message: 'Ambiguous value name "Too"',
+          message: 'Unrecognized enumerated value name "Too".',
         },
       ],
     },
@@ -170,7 +172,7 @@ ruleTester.run("verify-constants", rule, {
       output: "$effect`Hip to the Jive`",
       errors: [
         {
-          message: 'Ambiguous value name "Hip to the Jive"',
+          message: 'Ambiguous value name "Hip to the Jive".',
         },
       ],
     },
@@ -180,7 +182,7 @@ ruleTester.run("verify-constants", rule, {
       errors: [
         {
           message:
-            'Enumerated value "plump and chub" should be "Plump and Chubby"',
+            'Enumerated value "plump and chub" should be "Plump and Chubby".',
         },
       ],
     },
