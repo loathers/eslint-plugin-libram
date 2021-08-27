@@ -13,17 +13,19 @@ class TagInfo {
   caseMap: Map<string, string>;
   prefixSuffixMap: Map<string, string[]>;
 
-  constructor(singular: string, plural: string, data: string[]) {
+  constructor(singular: string, plural: string, data: [string, string][]) {
     const dataParsed: [number, string][] = [
       [0, "none"],
-      ...data.map((s): [number, string] => {
-        s.split("\t");
-        return [parseInt(s[0]), decodeEntities(s[1])];
+      ...data.map(([id, name]): [number, string] => {
+        let numericId = parseInt(id);
+        if (isNaN(numericId)) numericId = 0;
+        return [numericId, decodeEntities(name)];
       }),
     ];
     this.singular = singular;
     this.plural = plural;
-    this.idMap = new Map(dataParsed.filter(([id]) => id > 0));
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    this.idMap = new Map(dataParsed.filter(([id, _]) => id !== 0));
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.caseMap = new Map(dataParsed.map(([_, s]) => [s.toLowerCase(), s]));
 
@@ -206,7 +208,11 @@ const rule: Rule.RuleModule = {
                     },
                   });
                 }
-              } else if (fromNumeric) {
+                // "Ignore parseInt results from segments like $item`1.0` or $item`22abcd`
+              } else if (
+                fromNumeric &&
+                segment === parseInt(segment).toString()
+              ) {
                 context.report({
                   node,
                   message: `Enumerated value name "${segment}" should be "${fromNumeric}" not an id.`,

@@ -16,9 +16,9 @@ async function getMafiaData(path: string): Promise<string[]> {
     .filter((line: string) => line[0] !== "#");
 }
 
-type parser = (components: string[]) => [number, string];
+type parser = (components: string[]) => [string, string];
 function disambiguate(lines: string[], componentsToIdName: parser) {
-  const nameIdsMap = new Map<string, number[]>();
+  const nameIdsMap = new Map<string, string[]>();
   for (const line of lines) {
     const [id, name] = componentsToIdName(line.split("\t"));
     if (!name || name.trim() === "") continue;
@@ -30,11 +30,12 @@ function disambiguate(lines: string[], componentsToIdName: parser) {
     ids.push(id);
   }
 
-  return ([] as string[]).concat(
+  return ([] as [number | string, string][]).concat(
     ...Array.from(nameIdsMap).map(([name, ids]) =>
-      ids.map((id) => {
+      ids.map((id): [number | string, string] => {
+        const numeric = parseInt(id);
         const tag = ids.length > 1 ? `[${id}]` : ``;
-        return `${id};${tag}${name}`;
+        return [isNaN(numeric) ? id : numeric, `${tag}${name}`];
       })
     )
   );
@@ -47,7 +48,7 @@ async function write(source: string, destination: string, parser: parser) {
 }
 
 async function main() {
-  const defaultParse = ([id, name]: [string, string]) => [parseInt(id), name];
+  const defaultParse = ([id, name]: [string, string]) => [id, name];
   (
     [
       ["statuseffects.txt", "data/effects.json", defaultParse],
@@ -58,8 +59,10 @@ async function main() {
         "data/locations.json",
         (components) => {
           if (components.length < 4) return [];
-          const id = components[1].split("adventure=")[1] ?? "-1";
-          return [parseInt(id), components[3]];
+          const container = components[1].split("=");
+          // Want an id if prefixed by adventure, else just store the container
+          const id = container[0] === "adventure" ? container[1] : container[0];
+          return [id, components[3]];
         },
       ],
       [
