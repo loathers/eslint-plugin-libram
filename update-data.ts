@@ -1,12 +1,12 @@
-const fs = require("fs");
-const fetch = require("node-fetch");
+import fs from "fs";
+import fetch from "node-fetch";
 
-async function getContents(url) {
+async function getContents(url: string) {
   const response = await fetch(url);
   return response.text();
 }
 
-async function getMafiaData(path) {
+async function getMafiaData(path: string) {
   const text = await getContents(
     `https://sourceforge.net/p/kolmafia/code/HEAD/tree/src/data/${path}?format=raw`
   );
@@ -16,30 +16,35 @@ async function getMafiaData(path) {
     .filter((line) => line[0] !== "#");
 }
 
+function disambiguate(
+  lines: string[],
+  componentsToIdName: (components: string[]) => [number, string]
+) {
+  const nameIdsMap = new Map<string, number[]>();
+  for (const line of lines) {
+    const [id, name] = componentsToIdName(line.split("\t"));
+    if (!name || name.trim() === "") continue;
+    let ids = nameIdsMap.get(name);
+    if (!ids) {
+      ids = [];
+      nameIdsMap.set(name, ids);
+    }
+    ids.push(id);
+  }
+
+  return ([] as string[]).concat(
+    ...Array.from(nameIdsMap).map(([name, ids]) =>
+      ids.length === 1 ? [name] : ids.map((id) => `[${id}]${name}`)
+    )
+  );
+}
+
 async function main() {
   const effectLines = await getMafiaData("statuseffects.txt");
-  const parsedEffects = effectLines
-    .map((line) => {
-      const split = line.split("\t");
-      return { id: split[0], name: split[1], edited: false };
-    })
-    .filter((line) => line.name);
-  const effectsReadOnly = { ...parsedEffects };
-  const count = Object.keys(effectsReadOnly).length;
-  const disambiguate = (effect) => {
-    if (effect.edited) return;
-    effect.name = `[${effect.id}]${effect.name}`;
-    effect.edited = true;
-  };
-  for (let i = 0; i < count - 1; ++i) {
-    for (let j = i + 1; j < count; ++j) {
-      if (effectsReadOnly[i].name === effectsReadOnly[j].name) {
-        disambiguate(parsedEffects[i]);
-        disambiguate(parsedEffects[j]);
-      }
-    }
-  }
-  const effects = parsedEffects.map((line) => line.name);
+  const effects = disambiguate(effectLines, ([id, name]) => [
+    parseInt(id),
+    name,
+  ]);
   fs.writeFileSync("data/effects.json", JSON.stringify(effects));
 
   const familiarLines = await getMafiaData("familiars.txt");
@@ -49,9 +54,7 @@ async function main() {
   fs.writeFileSync("data/familiars.json", JSON.stringify(familiars));
 
   const itemLines = await getMafiaData("items.txt");
-  const items = itemLines
-    .map((line) => line.split("\t")[1])
-    .filter((name) => name);
+  const items = disambiguate(itemLines, ([id, name]) => [parseInt(id), name]);
   fs.writeFileSync("data/items.json", JSON.stringify(items));
 
   const locationLines = await getMafiaData("adventures.txt");
@@ -61,9 +64,10 @@ async function main() {
   fs.writeFileSync("data/locations.json", JSON.stringify(locations));
 
   const monsterLines = await getMafiaData("monsters.txt");
-  const monsters = monsterLines
-    .map((line) => line.split("\t")[0])
-    .filter((name) => name);
+  const monsters = disambiguate(monsterLines, ([name, id]) => [
+    parseInt(id),
+    name,
+  ]);
   fs.writeFileSync("data/monsters.json", JSON.stringify(monsters));
 
   const skillLines = await getMafiaData("classskills.txt");
