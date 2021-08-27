@@ -18,6 +18,7 @@
     "lint": "yarn run eslint lib tests/lib --ext .ts",
     "prepublishOnly": "yarn run build",
     "test": "mocha tests --recursive --extension ts --require ts-node/register",
+    "updateData": "ts-node update-data.ts",
     "watch": "yarn run tsc --watch"
   },
   "files": [
@@ -33,6 +34,7 @@
     "@types/eslint": "^7.28.0",
     "@types/estree": "^0.0.50",
     "@types/node": "^16.4.0",
+    "@types/node-fetch": "^2.5.12",
     "@types/requireindex": "^1.2.0",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",

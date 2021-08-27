@@ -68,6 +68,12 @@ ruleTester.run("verify-constants", rule, {
     {
       code: "$location`The Middle Chamber`",
     },
+    {
+      code: "$effect`[597]A Little Bit Evil`",
+    },
+    {
+      code: "$effect``",
+    },
   ],
 
   invalid: [
@@ -104,18 +110,20 @@ ruleTester.run("verify-constants", rule, {
             'Enumerated value "Newbiesport&trade; tent" has HTML entities; should be "Newbiesport™ tent".',
         },
         {
-          message: 'Unrecognized enumerated value name "buged bÃ¶n±Ã©t"',
+          message: 'Unrecognized enumerated value name "buged bÃ¶n±Ã©t".',
         },
       ],
     },
     {
       code: "$effects`And Your Family, Too`",
+      output: "$effects`And Your Family\\, Too, Too`",
       errors: [
         {
-          message: 'Unrecognized enumerated value name "And Your Family"',
+          message:
+            'Enumerated value "And Your Family" should be "And Your Family, Too".',
         },
         {
-          message: 'Unrecognized enumerated value name "Too"',
+          message: 'Unrecognized enumerated value name "Too".',
         },
       ],
     },
@@ -156,6 +164,25 @@ ruleTester.run("verify-constants", rule, {
         {
           message:
             "Enumerated value constants should be separated by a comma and space.",
+        },
+      ],
+    },
+    {
+      code: "$effect`Hip to the Jive`",
+      output: "$effect`Hip to the Jive`",
+      errors: [
+        {
+          message: 'Ambiguous value name "Hip to the Jive".',
+        },
+      ],
+    },
+    {
+      code: "$effect`plump and chub`",
+      output: "$effect`Plump and Chubby`",
+      errors: [
+        {
+          message:
+            'Enumerated value "plump and chub" should be "Plump and Chubby".',
         },
       ],
     },
