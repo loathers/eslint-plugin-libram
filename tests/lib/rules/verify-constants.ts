@@ -186,5 +186,33 @@ ruleTester.run("verify-constants", rule, {
         },
       ],
     },
+    {
+      code: "$item`1234`",
+      output: "item`plexiglass pants`",
+      errors: [
+        {
+          message:
+            'Enumerated value name "1234" should be "plexiglass pants" not an id.',
+        },
+      ],
+    },
+    /*
+    {
+      code: "$item`1.234`",
+      errors: [
+        {
+          message: 'Unrecognized enumerated value name "1.234".',
+        },
+      ],
+    },
+    {
+      code: "$item`1234 `",
+      errors: [
+        {
+          message: 'Unrecognized enumerated value name "1234 ".',
+        },
+      ],
+    },
+    */
   ],
 });
