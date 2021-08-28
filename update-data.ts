@@ -30,12 +30,12 @@ function disambiguate(lines: string[], componentsToIdName: parser) {
     ids.push(id);
   }
 
-  return ([] as [number | string, string][]).concat(
+  return ([] as [number, string][]).concat(
     ...Array.from(nameIdsMap).map(([name, ids]) =>
-      ids.map((id): [number | string, string] => {
+      ids.map((id): [number, string] => {
         const numeric = parseInt(id);
         const tag = ids.length > 1 ? `[${id}]` : ``;
-        return [isNaN(numeric) ? id : numeric, `${tag}${name}`];
+        return [isNaN(numeric) ? 0 : numeric, `${tag}${name}`];
       })
     )
   );
@@ -60,8 +60,8 @@ async function main() {
         (components) => {
           if (components.length < 4) return [];
           const container = components[1].split("=");
-          // Want an id if prefixed by adventure, else just store the container
-          const id = container[0] === "adventure" ? container[1] : container[0];
+          // Want an id if prefixed by adventure, else just use 0 which is treated as unknown/ambiguous
+          const id = container[0] === "adventure" ? container[1] : 0;
           return [id, components[3]];
         },
       ],

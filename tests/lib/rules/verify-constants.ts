@@ -218,5 +218,13 @@ ruleTester.run("verify-constants", rule, {
         },
       ],
     },
+    {
+      code: "$location`0`",
+      errors: [
+        {
+          message: 'Unrecognized enumerated value name "0".',
+        },
+      ],
+    },
   ],
 });

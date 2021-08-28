@@ -17,9 +17,7 @@ class TagInfo {
     const dataParsed: [number, string][] = [
       [0, "none"],
       ...data.map(([id, name]): [number, string] => {
-        let numericId = parseInt(id);
-        if (isNaN(numericId)) numericId = 0;
-        return [numericId, decodeEntities(name)];
+        return [parseInt(id), decodeEntities(name)];
       }),
     ];
     this.singular = singular;
