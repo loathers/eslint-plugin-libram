@@ -24,10 +24,8 @@ class TagInfo {
     ];
     this.singular = singular;
     this.plural = plural;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.idMap = new Map(dataParsed.filter(([id, _]) => id !== 0));
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.caseMap = new Map(dataParsed.map(([_, s]) => [s.toLowerCase(), s]));
+    this.idMap = new Map(dataParsed.filter(([id]) => id !== 0));
+    this.caseMap = new Map(dataParsed.map(([, s]) => [s.toLowerCase(), s]));
 
     const prefixSuffixSetMap = new Map<string, Set<string>>();
     for (const [_, element] of dataParsed) {
