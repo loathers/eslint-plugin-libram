@@ -65,11 +65,7 @@ async function main() {
           return [id, components[3]];
         },
       ],
-      [
-        "monsters.txt",
-        "data/monsters.json",
-        ([name, id]) => [parseInt(id), name],
-      ],
+      ["monsters.txt", "data/monsters.json", ([name, id]) => [id, name]],
       ["classskills.txt", "data/skills.json", defaultParse],
     ] as [string, string, parser][]
   ).forEach(([source, dest, parse]) => write(source, dest, parse));
