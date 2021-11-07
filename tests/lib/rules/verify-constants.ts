@@ -74,6 +74,15 @@ ruleTester.run("verify-constants", rule, {
     {
       code: "$effect``",
     },
+    {
+      code: "$effect`Make Meat FA$T!`",
+    },
+    {
+      code: "$item`Gene Tonic: ${phylum}`",
+    },
+    {
+      code: "$items`Gene Tonic: ${phylum1}, Gene Tonic: ${phylum2}`",
+    },
   ],
 
   invalid: [

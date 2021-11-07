@@ -158,6 +158,8 @@ const rule: Rule.RuleModule = {
       TaggedTemplateExpression(
         node: ESTree.TaggedTemplateExpression & Rule.NodeParentExtension
       ) {
+        // For now just don't check constants if they contain other template literal expressions
+        if (node.quasi.expressions.length > 0) return;
         const tagText = sourceCode.getText(node.tag);
         const singular = singularTags.get(tagText);
         const plural = pluralTags.get(tagText);
