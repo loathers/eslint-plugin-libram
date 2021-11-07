@@ -8,7 +8,7 @@ async function getContents(url: string) {
 
 async function getMafiaData(path: string) {
   const text = await getContents(
-    `https://sourceforge.net/p/kolmafia/code/HEAD/tree/src/data/${path}?format=raw`
+    `https://raw.githubusercontent.com/kolmafia/kolmafia/main/src/data/${path}`
   );
   return text
     .split("\n")
