@@ -40,6 +40,8 @@ function disambiguate(
 }
 
 async function main() {
+  if (!fs.existsSync("data")) fs.mkdirSync("data");
+
   const effectLines = await getMafiaData("statuseffects.txt");
   const effects = disambiguate(effectLines, ([id, name]) => [
     parseInt(id),
