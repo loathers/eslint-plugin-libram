@@ -1,6 +1,32 @@
 import fs from "fs";
 import fetch from "node-fetch";
 
+const classes = [
+  "Seal Clubber",
+  "Turtle Tamer",
+  "Pastamancer",
+  "Sauceror",
+  "Disco Bandit",
+  "Accordion Thief",
+  "Helpful Bird",
+  "Astral Spirit",
+  "Inscrutable Force",
+  "Hope Crusher",
+  "Avatar of Boris",
+  "Zombie Master",
+  "None",
+  "Avatar of Jarlsberg",
+  "Avatar of Sneaky Pete",
+  "None",
+  "Ed",
+  "Cow Puncher",
+  "Beanslinger",
+  "Snake Oiler",
+  "Gelatinous Noob",
+  "Vampyre",
+  "Plumber",
+];
+
 async function getContents(url: string) {
   const response = await fetch(url);
   return response.text();
@@ -77,6 +103,8 @@ async function main() {
     .map((line) => line.split("\t")[1])
     .filter((name) => name);
   fs.writeFileSync("data/skills.json", JSON.stringify(skills));
+
+  fs.writeFileSync("data/classes.json", JSON.stringify(classes));
 }
 
 main();
