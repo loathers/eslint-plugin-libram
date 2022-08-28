@@ -25,6 +25,7 @@ const classes = [
   "Gelatinous Noob",
   "Vampyre",
   "Plumber",
+  "Grey Goo",
 ];
 
 async function getContents(url: string) {
