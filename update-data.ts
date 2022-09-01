@@ -1,32 +1,6 @@
 import fs from "fs";
 import fetch from "node-fetch";
 
-const classes = [
-  "Seal Clubber",
-  "Turtle Tamer",
-  "Pastamancer",
-  "Sauceror",
-  "Disco Bandit",
-  "Accordion Thief",
-  "Helpful Bird",
-  "Astral Spirit",
-  "Inscrutable Force",
-  "Hope Crusher",
-  "Avatar of Boris",
-  "Zombie Master",
-  "None",
-  "Avatar of Jarlsberg",
-  "Avatar of Sneaky Pete",
-  "None",
-  "Ed",
-  "Cow Puncher",
-  "Beanslinger",
-  "Snake Oiler",
-  "Gelatinous Noob",
-  "Vampyre",
-  "Plumber",
-];
-
 async function getContents(url: string) {
   const response = await fetch(url);
   return response.text();
@@ -40,6 +14,28 @@ async function getMafiaData(path: string) {
     .split("\n")
     .slice(1)
     .filter((line) => line[0] !== "#");
+}
+
+async function getMafiaEnumData(filename: string) {
+  const text = await getContents(
+    `https://raw.githubusercontent.com/kolmafia/kolmafia/main/src/net/sourceforge/kolmafia/${filename}.java`
+  );
+  const enumStart = text.indexOf("public enum");
+  const enumEnd = text.indexOf(";", enumStart);
+  return text.slice(enumStart, enumEnd);
+}
+
+const ENUM_NAME_PATTERN = /\(\n*"([^"]+)",/g;
+
+function matchAll(text: string, pattern: RegExp) {
+  const matches: string[] = [];
+
+  let match: RegExpExecArray | null;
+  while ((match = pattern.exec(text)) !== null) {
+    matches.push(match[1]);
+  }
+
+  return matches;
 }
 
 function disambiguate(
@@ -104,7 +100,13 @@ async function main() {
     .filter((name) => name);
   fs.writeFileSync("data/skills.json", JSON.stringify(skills));
 
+  const classEnum = await getMafiaEnumData("AscensionClass");
+  const classes = matchAll(classEnum, ENUM_NAME_PATTERN);
   fs.writeFileSync("data/classes.json", JSON.stringify(classes));
+
+  const pathEnum = await getMafiaEnumData("AscensionPath");
+  const paths = matchAll(pathEnum, ENUM_NAME_PATTERN);
+  fs.writeFileSync("data/paths.json", JSON.stringify(paths));
 }
 
 main();
