@@ -27,6 +27,53 @@ const classes = [
   "Plumber",
 ];
 
+const paths = [
+  "Live. Ascend. Repeat.",
+  "Avatar of Jarlsberg",
+  "Class Act",
+  "Avatar of Sneaky Pete",
+  "One Crazy Random Summer",
+  "Actually Ed the Undying",
+  "Kingdom of Exploathing",
+  "Grey You",
+  "Way of the Surprising Fist",
+  "Disguises Delimit",
+  "Zombie Slayer",
+  "Boozetafarian",
+  "Avatar of West of Loathing",
+  "Wildfire",
+  "Nuclear Autumn",
+  "Avatar of Boris",
+  "Standard",
+  "Pocket Familiars",
+  "Bugbear Invasion",
+  "KOLHS",
+  "Path of the Plumber",
+  "License to Adventure",
+  "BIG!",
+  "The Source",
+  "Bad Moon",
+  "Bees Hate You",
+  "Grey Goo",
+  "Fall of the Dinosaurs",
+  "You, Robot",
+  "Journeyman",
+  "Teetotaler",
+  "Low Key Summer",
+  "Slow and Steady",
+  "Gelatinous Noob",
+  "Picky",
+  "Dark Gyffte",
+  "Heavy Rains",
+  "Community Service",
+  "Oxygenarian",
+  "Trendy",
+  "Class Act II: A Class For Pigs",
+  "G-Lover",
+  "Two Crazy Random Summer",
+  "Quantum Terrarium",
+];
+
 async function getContents(url: string) {
   const response = await fetch(url);
   return response.text();
@@ -105,6 +152,7 @@ async function main() {
   fs.writeFileSync("data/skills.json", JSON.stringify(skills));
 
   fs.writeFileSync("data/classes.json", JSON.stringify(classes));
+  fs.writeFileSync("data/paths.json", JSON.stringify(paths));
 }
 
 main();
