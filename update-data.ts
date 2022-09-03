@@ -25,7 +25,7 @@ async function getMafiaEnumData(filename: string) {
   return text.slice(enumStart, enumEnd);
 }
 
-const ENUM_NAME_PATTERN = /\(\n*"([^"]+)",/g;
+const ENUM_NAME_PATTERN = /\(\n*\s*"([^"]+)",/g;
 
 function matchAll(text: string, pattern: RegExp) {
   const matches: string[] = [];
