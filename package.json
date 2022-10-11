@@ -31,14 +31,14 @@
     "requireindex": "~1.1.0"
   },
   "devDependencies": {
-    "@types/eslint": "^7.28.0",
+    "@types/eslint": "^8.4.6",
     "@types/estree": "^0.0.50",
     "@types/node": "^16.4.0",
     "@types/node-fetch": "^2.5.12",
     "@types/requireindex": "^1.2.0",
-    "@typescript-eslint/eslint-plugin": "^4.28.4",
-    "@typescript-eslint/parser": "^4.28.4",
-    "eslint": "^7.31.0",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "eslint": "^8.25.0",
     "mocha": "^7.2.0",
     "node-fetch": "^2.6.1",
     "prettier": "^2.3.2",
