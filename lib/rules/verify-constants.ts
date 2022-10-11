@@ -82,6 +82,7 @@ const rule: Rule.RuleModule = {
       recommended: false,
     },
     fixable: "code",
+    hasSuggestions: true,
     schema: [
       {
         type: "object",
