@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-libram",
-  "version": "0.2.20",
+  "version": "0.2.21",
   "description": "Eslint rules for Libram",
   "keywords": [
     "eslint",
