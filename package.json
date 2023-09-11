@@ -16,7 +16,7 @@
     "docs": "yarn run typedoc",
     "format": "yarn run prettier --write src/**/* examples/**/*",
     "lint": "yarn run eslint lib tests/lib --ext .ts",
-    "prepublishOnly": "yarn run build && yarn run updateData",
+    "prepack": "yarn run build && yarn run updateData",
     "test": "mocha tests --recursive --extension ts --require ts-node/register",
     "updateData": "ts-node update-data.ts",
     "watch": "yarn run tsc --watch"
