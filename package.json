@@ -27,7 +27,7 @@
     "data/*.json"
   ],
   "dependencies": {
-    "html-entities": "^2.3.2",
+    "html-entities": "^2.4.0",
     "requireindex": "~1.2.0"
   },
   "devDependencies": {
