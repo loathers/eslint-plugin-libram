@@ -1,6 +1,8 @@
 import fs from "fs";
 import fetch from "node-fetch";
 
+export {};
+
 async function getContents(url: string) {
   const response = await fetch(url);
   return response.text();

@@ -10,6 +10,7 @@
   ],
   "author": "Patrick Hulin",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
     "build": "yarn run tsc",
     "clean": "rm -f {lib,dist,tests}/*.js {lib,dist,tests}/*.d.ts {lib,dist,tests}/**/*.js {lib,dist,tests}/**/*.d.ts",
@@ -18,7 +19,7 @@
     "lint": "yarn run eslint lib tests/lib --ext .ts",
     "prepack": "yarn run build && yarn run updateData",
     "test": "mocha tests --recursive --extension ts --require ts-node/register",
-    "updateData": "ts-node update-data.ts",
+    "updateData": "node --loader ts-node/esm update-data.ts",
     "watch": "yarn run tsc --watch"
   },
   "files": [
