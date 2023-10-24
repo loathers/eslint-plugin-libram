@@ -14,7 +14,7 @@
     "build": "yarn run tsc",
     "clean": "rm -f {lib,dist,tests}/*.js {lib,dist,tests}/*.d.ts {lib,dist,tests}/**/*.js {lib,dist,tests}/**/*.d.ts",
     "docs": "yarn run typedoc",
-    "format": "yarn run prettier --write src/**/* examples/**/*",
+    "format": "yarn run prettier --write .",
     "lint": "yarn run eslint lib tests/lib --ext .ts",
     "prepack": "yarn run build && yarn run updateData",
     "test": "mocha tests --recursive --extension ts --require ts-node/register",

@@ -24,7 +24,7 @@ class TagInfo {
     for (const element of dataParsed) {
       const elementLower = element.toLowerCase();
       const indices = Array.from(new Array(element.length).keys()).slice(
-        SUBSTRING_MIN_LENGTH
+        SUBSTRING_MIN_LENGTH,
       );
       for (const index of indices) {
         for (const substring of [
@@ -45,14 +45,14 @@ class TagInfo {
       Array.from(prefixSuffixSetMap.entries()).map(([k, v]) => [
         k,
         Array.from(v),
-      ])
+      ]),
     );
   }
 }
 
 function getJsonData(filename: string) {
   return JSON.parse(
-    readFileSync(`${__dirname}/../../data/${filename}`, { encoding: "utf-8" })
+    readFileSync(`${__dirname}/../../data/${filename}`, { encoding: "utf-8" }),
   );
 }
 
@@ -68,10 +68,10 @@ const tags = [
 ];
 
 const singularTags = new Map<string, TagInfo>(
-  tags.map((tagInfo) => [tagInfo.singular, tagInfo])
+  tags.map((tagInfo) => [tagInfo.singular, tagInfo]),
 );
 const pluralTags = new Map<string, TagInfo>(
-  tags.map((tagInfo) => [tagInfo.plural, tagInfo])
+  tags.map((tagInfo) => [tagInfo.plural, tagInfo]),
 );
 
 const rule: Rule.RuleModule = {
@@ -111,7 +111,7 @@ const rule: Rule.RuleModule = {
 
     function positionAdd(position: ESTree.Position, offset: number) {
       return sourceCode.getLocFromIndex(
-        sourceCode.getIndexFromLoc(position) + offset
+        sourceCode.getIndexFromLoc(position) + offset,
       );
     }
 
@@ -128,17 +128,17 @@ const rule: Rule.RuleModule = {
       let lastMatch: RegExpExecArray | null = null;
       const sliced = quasi.value.raw.slice(
         startOffset,
-        quasi.value.raw.length - endOffset
+        quasi.value.raw.length - endOffset,
       );
       while ((match = pattern.exec(sliced)) !== null) {
         result.push([
           sliced.slice(
             lastMatch ? lastMatch.index + lastMatch[0].length : 0,
-            match.index
+            match.index,
           ),
           positionAdd(
             start,
-            lastMatch ? lastMatch.index + lastMatch[0].length : 0
+            lastMatch ? lastMatch.index + lastMatch[0].length : 0,
           ),
           positionAdd(start, match.index),
         ]);
@@ -148,7 +148,7 @@ const rule: Rule.RuleModule = {
         sliced.slice(lastMatch ? lastMatch.index + lastMatch[0].length : 0),
         positionAdd(
           start,
-          lastMatch ? lastMatch.index + lastMatch[0].length : 0
+          lastMatch ? lastMatch.index + lastMatch[0].length : 0,
         ),
         end,
       ]);
@@ -158,7 +158,7 @@ const rule: Rule.RuleModule = {
 
     return {
       TaggedTemplateExpression(
-        node: ESTree.TaggedTemplateExpression & Rule.NodeParentExtension
+        node: ESTree.TaggedTemplateExpression & Rule.NodeParentExtension,
       ) {
         // For now just don't check constants if they contain other template literal expressions
         if (node.quasi.expressions.length > 0) return;
@@ -188,7 +188,7 @@ const rule: Rule.RuleModule = {
             if (properlyCapitalized === undefined) {
               const decoded = decodeEntities(segment);
               const decodedProperlyCapitalized = tagElements.caseMap.get(
-                decoded.toLowerCase()
+                decoded.toLowerCase(),
               );
               if (decodedProperlyCapitalized !== undefined) {
                 if (!options?.ignoreEntities) {
@@ -198,7 +198,7 @@ const rule: Rule.RuleModule = {
                     fix(fixer) {
                       return fixer.replaceTextRange(
                         range,
-                        decodedProperlyCapitalized
+                        decodedProperlyCapitalized,
                       );
                     },
                   });
@@ -210,7 +210,7 @@ const rule: Rule.RuleModule = {
                     fix: (fixer: Rule.RuleFixer) => {
                       return fixer.replaceTextRange(
                         range,
-                        dis.replace(",", "\\,")
+                        dis.replace(",", "\\,"),
                       );
                     },
                   };
@@ -231,7 +231,7 @@ const rule: Rule.RuleModule = {
                   fix(fixer) {
                     return fixer.replaceTextRange(
                       range,
-                      disambiguations[0].replace(",", "\\,")
+                      disambiguations[0].replace(",", "\\,"),
                     );
                   },
                 });
@@ -268,7 +268,7 @@ const rule: Rule.RuleModule = {
                 const [start, end] = quasi.range!;
                 return fixer.replaceTextRange(
                   [start + 1, end - 1],
-                  properlySpaced
+                  properlySpaced,
                 );
               },
             });
