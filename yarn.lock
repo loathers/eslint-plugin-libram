@@ -444,10 +444,10 @@ cross-spawn@^7.0.2:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
-data-of-loathing@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/data-of-loathing/-/data-of-loathing-1.6.0.tgz#07729c05bb139038eed260f9be9008a088b35966"
-  integrity sha512-09/HdLlSOB1EnDAfXcRuma0nAtHT60yLe/OBkbRipfAtRLej+ljmd8wJILZxeb3thMb2U5aXd02lDrrYAPcEqQ==
+data-of-loathing@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/data-of-loathing/-/data-of-loathing-1.6.1.tgz#185fa88f992adbf13a9ce40c541b9efa70a7c9cd"
+  integrity sha512-52RZg94EnW/ZCoCtNnQDkJpKApg6vUN2W9taEiYCKVat7yWzwqt0RZmC0xRvV8viBRED1C3vWXNtCmUAOJWEsA==
   dependencies:
     java-parser "^2.0.5"
 
