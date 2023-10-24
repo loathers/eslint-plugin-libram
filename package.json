@@ -38,6 +38,7 @@
     "@types/requireindex": "^1.2.0",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
     "@typescript-eslint/parser": "^6.6.0",
+    "data-of-loathing": "^1.4.0",
     "eslint": "^8.25.0",
     "mocha": "^10.2.0",
     "prettier": "^3.0.3",
