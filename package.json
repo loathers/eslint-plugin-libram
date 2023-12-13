@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@types/eslint": "^8.44.9",
-    "@types/estree": "^1.0.5",
+    "@types/estree": "1.0.1",
     "@types/node": "^20.10.4",
     "@types/node-fetch": "^2.6.9",
     "@types/requireindex": "^1.2.4",

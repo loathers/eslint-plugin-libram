@@ -106,7 +106,7 @@ const rule: Rule.RuleModule = {
   },
 
   create(context: Rule.RuleContext) {
-    const sourceCode = context.getSourceCode();
+    const sourceCode = context.sourceCode;
     const options = context.options[0];
 
     function positionAdd(position: ESTree.Position, offset: number) {
