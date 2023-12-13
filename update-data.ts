@@ -1,40 +1,25 @@
 import fs from "fs/promises";
-import {
-  disambiguate,
-  loadClasses,
-  loadEffects,
-  loadFamiliars,
-  loadItems,
-  loadLocations,
-  loadMonsters,
-  loadPaths,
-  loadSkills,
-} from "data-of-loathing";
+import { gql, GraphQLClient } from 'graphql-request'
+
+const client = new GraphQLClient("https://data.loathers.net/graphql");
 
 type JobType = {
-  filename: string;
-  loader: () => Promise<{ data: { id: number; name: string }[] }>;
-  shouldDisambiguate: boolean;
+  entity: string;
+  disambiguate: boolean;
 };
 
 const jobs: JobType[] = [
-  { filename: "classes.json", loader: loadClasses, shouldDisambiguate: false },
-  { filename: "effects.json", loader: loadEffects, shouldDisambiguate: false },
-  {
-    filename: "familiars.json",
-    loader: loadFamiliars,
-    shouldDisambiguate: false,
-  },
-  { filename: "items.json", loader: loadItems, shouldDisambiguate: true },
-  {
-    filename: "locations.json",
-    loader: loadLocations,
-    shouldDisambiguate: false,
-  },
-  { filename: "monsters.json", loader: loadMonsters, shouldDisambiguate: true },
-  { filename: "paths.json", loader: loadPaths, shouldDisambiguate: false },
-  { filename: "skills.json", loader: loadSkills, shouldDisambiguate: false },
+  { entity: "classes", disambiguate: false },
+  { entity: "effects", disambiguate: false },
+  { entity: "familiars", disambiguate: false },
+  { entity: "items", disambiguate: true },
+  { entity: "locations", disambiguate: false },
+  { entity: "monsters", disambiguate: true },
+  { entity: "paths", disambiguate: false },
+  { entity: "skills", disambiguate: true },
 ];
+
+const titleCase = (i: string) => i.slice(0, 1).toUpperCase() + i.slice(1);
 
 async function exists(file: string) {
   try {
@@ -49,12 +34,23 @@ async function main() {
   if (!(await exists("data"))) await fs.mkdir("data");
 
   await Promise.all(
-    jobs.map(async ({ filename, loader, shouldDisambiguate }) => {
-      const { data } = await loader();
-      const names = shouldDisambiguate
-        ? disambiguate(data)
-        : data.map((d) => d.name);
-      return await fs.writeFile(`data/${filename}`, JSON.stringify(names));
+    jobs.map(async ({ entity, disambiguate }) => {
+      const group = `all${titleCase(entity)}`;
+      const data = await client.request<{ [group: string]: { edges: { node: { id: number, name: string, ambiguous?: boolean } }[] } }>(gql`
+        {
+          ${group} {
+            edges {
+              node {
+                id
+                name
+                ${disambiguate ? "ambiguous" : ""}
+              }
+            }
+          }
+        }
+      `);
+      const names = data[group].edges.map(({ node }) => node.ambiguous ? `[${node.id}]${node.name}` : node.name);
+      return await fs.writeFile(`data/${entity}.json`, JSON.stringify(names));
     }),
   );
 }
