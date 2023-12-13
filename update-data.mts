@@ -1,5 +1,5 @@
 import fs from "fs/promises";
-import { gql, GraphQLClient } from 'graphql-request'
+import { gql, GraphQLClient } from "graphql-request";
 
 const client = new GraphQLClient("https://data.loathers.net/graphql");
 
