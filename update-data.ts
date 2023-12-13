@@ -10,7 +10,7 @@ type JobType = {
 
 const jobs: JobType[] = [
   { entity: "classes", disambiguate: false },
-  { entity: "effects", disambiguate: false },
+  { entity: "effects", disambiguate: true },
   { entity: "familiars", disambiguate: false },
   { entity: "items", disambiguate: true },
   { entity: "locations", disambiguate: false },
@@ -36,20 +36,18 @@ async function main() {
   await Promise.all(
     jobs.map(async ({ entity, disambiguate }) => {
       const group = `all${titleCase(entity)}`;
-      const data = await client.request<{ [group: string]: { edges: { node: { id: number, name: string, ambiguous?: boolean } }[] } }>(gql`
+      const data = await client.request<{ [group: string]: { nodes: { id: number, name: string, ambiguous?: boolean }[] } }>(gql`
         {
           ${group} {
-            edges {
-              node {
-                id
-                name
-                ${disambiguate ? "ambiguous" : ""}
-              }
+            nodes {
+              id
+              name
+              ${disambiguate ? "ambiguous" : ""}
             }
           }
         }
       `);
-      const names = data[group].edges.map(({ node }) => node.ambiguous ? `[${node.id}]${node.name}` : node.name);
+      const names = data[group].nodes.map((node) => node.ambiguous ? `[${node.id}]${node.name}` : node.name);
       return await fs.writeFile(`data/${entity}.json`, JSON.stringify(names));
     }),
   );
