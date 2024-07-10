@@ -36,7 +36,11 @@ async function main() {
   await Promise.all(
     jobs.map(async ({ entity, disambiguate }) => {
       const group = `all${titleCase(entity)}`;
-      const data = await client.request<{ [group: string]: { nodes: { id: number, name: string, ambiguous?: boolean }[] } }>(gql`
+      const data = await client.request<{
+        [group: string]: {
+          nodes: { id: number; name: string; ambiguous?: boolean }[];
+        };
+      }>(gql`
         {
           ${group} {
             nodes {
@@ -47,7 +51,9 @@ async function main() {
           }
         }
       `);
-      const names = data[group].nodes.map((node) => node.ambiguous ? `[${node.id}]${node.name}` : node.name);
+      const names = data[group].nodes.map((node) =>
+        node.ambiguous ? `[${node.id}]${node.name}` : node.name,
+      );
       return await fs.writeFile(`data/${entity}.json`, JSON.stringify(names));
     }),
   );

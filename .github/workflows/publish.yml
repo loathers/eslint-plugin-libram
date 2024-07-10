@@ -2,14 +2,17 @@ name: Publish package to NPM
 on:
   release:
     types: [created]
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
+      - uses: actions/setup-node@v4
         with:
-          node-version: "18.x"
           registry-url: "https://registry.npmjs.org"
       - run: yarn
       - run: yarn publish
