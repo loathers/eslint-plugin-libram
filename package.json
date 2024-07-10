@@ -17,8 +17,8 @@
     "format": "yarn run prettier --write .",
     "lint": "yarn run eslint lib tests/lib --ext .ts",
     "prepack": "yarn run build && yarn run updateData",
-    "test": "mocha tests --recursive --extension ts --require ts-node/register",
-    "updateData": "node --loader ts-node/esm/transpile-only update-data.mjs",
+    "test": "mocha tests --recursive --extension ts --require tsx",
+    "updateData": "node --import tsx update-data.mjs",
     "watch": "yarn run tsc --watch"
   },
   "files": [
@@ -43,7 +43,7 @@
     "graphql-request": "^7.1.0",
     "mocha": "^10.6.0",
     "prettier": "^3.3.2",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.16.2",
     "typescript": "^5.5.3"
   },
   "engines": {
