@@ -8,6 +8,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "target": "ESNext",
+    "declaration": true,
     "skipLibCheck": true
   },
   "include": ["lib/**/*.ts"]

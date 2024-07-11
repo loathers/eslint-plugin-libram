@@ -2,7 +2,7 @@ import { Rule } from "eslint";
 import * as ESTree from "estree";
 import { decode as decodeEntities } from "html-entities";
 
-import { Plurals, pluralTags, singularTags, tags } from "../tags";
+import { Plurals, pluralTags, singularTags, tags } from "../tags.js";
 
 export const meta: Rule.RuleMetaData = {
   docs: {
@@ -56,6 +56,11 @@ type Options = {
 export function create(context: Rule.RuleContext): Rule.RuleListener {
   const sourceCode = context.sourceCode;
   const options = context.options[0] as Options | undefined;
+
+  // Load from provided data else data contained in the plugin.
+  pluralTags.forEach((tag) => {
+    tag.load(options?.data[tag.plural]);
+  });
 
   function positionAdd(position: ESTree.Position, offset: number) {
     return sourceCode.getLocFromIndex(
@@ -112,9 +117,6 @@ export function create(context: Rule.RuleContext): Rule.RuleListener {
       const tagName = tagText.slice(1);
       const tagElements = singularTags.get(tagName) ?? pluralTags.get(tagName);
       if (!tagElements) return;
-
-      // Load from provided data else data contained in the plugin.
-      tagElements.load(options?.data[tagElements.plural]);
 
       for (const quasi of node.quasi.quasis) {
         const segments = pluralTags.has(tagName)

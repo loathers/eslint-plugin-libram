@@ -3,7 +3,7 @@
  * @author Patrick Hulin
  */
 import { ESLint } from "eslint";
-import * as verifyConstants from "./rules/verify-constants";
+import * as verifyConstants from "./rules/verify-constants.js";
 
 const plugin: ESLint.Plugin = {
   meta: {
@@ -18,6 +18,5 @@ const plugin: ESLint.Plugin = {
 };
 
 export default plugin;
-module.exports = plugin;
 
-export { loadData } from "./loadData";
+export { loadData } from "./loadData.js";

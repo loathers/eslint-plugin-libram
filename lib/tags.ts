@@ -11,6 +11,7 @@ class TagInfo {
   data: string[] = [];
   caseMap: Map<string, string> = new Map();
   prefixSuffixMap: Map<string, string[]> = new Map();
+  loaded = false;
 
   constructor(singular: Singulars, plural: Plurals) {
     this.singular = singular;
@@ -19,18 +20,20 @@ class TagInfo {
   }
 
   load(data?: string[]) {
+    if (this.loaded) return;
+
     data ??= JSON.parse(
-      readFileSync(`${__dirname}/../data/${this.filename}`, {
+      readFileSync(`${import.meta.dirname}/../data/${this.filename}`, {
         encoding: "utf-8",
       }),
     ) as string[];
 
-    const dataParsed = ["none", ...data.map((s) => decodeEntities(s))];
-    this.data = dataParsed;
-    this.caseMap = new Map(dataParsed.map((s) => [s.toLowerCase(), s]));
+    this.data = ["none", ...data.map((s) => decodeEntities(s))];
+
+    this.caseMap = new Map(this.data.map((s) => [s.toLowerCase(), s]));
 
     const prefixSuffixSetMap = new Map<string, Set<string>>();
-    for (const element of dataParsed) {
+    for (const element of this.data) {
       const elementLower = element.toLowerCase();
       const indices = Array.from(new Array(element.length).keys()).slice(
         SUBSTRING_MIN_LENGTH,
@@ -56,6 +59,8 @@ class TagInfo {
         Array.from(v),
       ]),
     );
+
+    this.loaded = true;
   }
 }
 

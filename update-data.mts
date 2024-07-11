@@ -13,7 +13,7 @@ async function main() {
   const data = await loadData();
 
   await Promise.all(
-    data.map(([entity, names]) =>
+    Object.entries(data).map(([entity, names]) =>
       fs.writeFile(`data/${entity}.json`, JSON.stringify(names)),
     ),
   );

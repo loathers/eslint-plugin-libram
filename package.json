@@ -9,6 +9,7 @@
     "libram"
   ],
   "author": "Patrick Hulin",
+  "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "build": "yarn run tsc",
@@ -31,6 +32,7 @@
     "requireindex": "~1.2.0"
   },
   "optionalDependencies": {
+    "graphql": "^16.9.0",
     "graphql-request": "^7.1.0"
   },
   "devDependencies": {
