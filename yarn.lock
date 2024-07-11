@@ -395,12 +395,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.10.4":
-  version: 20.10.4
-  resolution: "@types/node@npm:20.10.4"
+"@types/node@npm:^20.14.10":
+  version: 20.14.10
+  resolution: "@types/node@npm:20.14.10"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 10c0/2c8b70cba731eb2ae3ae046daa74903bfcbb0e7b9196da767e5895054f6d252296ae7a04fb1dbbcb53bb004c4c658c05eaea2731bc9e2dd9e08f7e88d672f563
+  checksum: 10c0/0b06cff14365c2d0085dc16cc8cbea5c40ec09cfc1fea966be9eeecf35562760bfde8f88e86de6edfaf394501236e229d9c1084fad04fb4dec472ae245d8ae69
   languageName: node
   linkType: hard
 
@@ -1073,7 +1073,7 @@ __metadata:
   dependencies:
     "@types/eslint": "npm:^8.56.10"
     "@types/estree": "npm:1.0.5"
-    "@types/node": "npm:^20.10.4"
+    "@types/node": "npm:^20.14.10"
     "@types/node-fetch": "npm:^2.6.11"
     "@types/requireindex": "npm:^1.2.4"
     "@typescript-eslint/eslint-plugin": "npm:^7.16.0"
@@ -1087,6 +1087,9 @@ __metadata:
     requireindex: "npm:~1.2.0"
     tsx: "npm:^4.16.2"
     typescript: "npm:^5.5.3"
+  dependenciesMeta:
+    graphql-request:
+      optional: true
   languageName: unknown
   linkType: soft
 

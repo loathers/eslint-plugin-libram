@@ -2,8 +2,22 @@
  * @fileoverview Eslint rules for Libram
  * @author Patrick Hulin
  */
+import { ESLint } from "eslint";
+import * as verifyConstants from "./rules/verify-constants";
 
-import requireIndex from "requireindex";
+const plugin: ESLint.Plugin = {
+  meta: {
+    name: "eslint-plugin-libram",
+    version: "0.5.0",
+  },
+  configs: {},
+  rules: {
+    "verify-constants": verifyConstants,
+  },
+  processors: {},
+};
 
-// import all rules in lib/rules
-export const rules = requireIndex(__dirname + "/rules");
+export default plugin;
+module.exports = plugin;
+
+export { loadData } from "./loadData";

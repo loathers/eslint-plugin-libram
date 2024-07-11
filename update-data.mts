@@ -1,61 +1,21 @@
 import fs from "fs/promises";
-import { gql, GraphQLClient } from "graphql-request";
+import { loadData } from "./lib/loadData";
 
-const client = new GraphQLClient("https://data.loathers.net/graphql");
-
-type JobType = {
-  entity: string;
-  disambiguate: boolean;
-};
-
-const jobs: JobType[] = [
-  { entity: "classes", disambiguate: false },
-  { entity: "effects", disambiguate: true },
-  { entity: "familiars", disambiguate: false },
-  { entity: "items", disambiguate: true },
-  { entity: "locations", disambiguate: false },
-  { entity: "monsters", disambiguate: true },
-  { entity: "paths", disambiguate: false },
-  { entity: "skills", disambiguate: true },
-];
-
-const titleCase = (i: string) => i.slice(0, 1).toUpperCase() + i.slice(1);
-
-async function exists(file: string) {
-  try {
-    await fs.access(file);
-    return true;
-  } catch {
-    return false;
-  }
-}
+const exists = async (file: string) =>
+  fs
+    .access(file)
+    .then(() => true)
+    .catch(() => false);
 
 async function main() {
   if (!(await exists("data"))) await fs.mkdir("data");
 
+  const data = await loadData();
+
   await Promise.all(
-    jobs.map(async ({ entity, disambiguate }) => {
-      const group = `all${titleCase(entity)}`;
-      const data = await client.request<{
-        [group: string]: {
-          nodes: { id: number; name: string; ambiguous?: boolean }[];
-        };
-      }>(gql`
-        {
-          ${group} {
-            nodes {
-              id
-              name
-              ${disambiguate ? "ambiguous" : ""}
-            }
-          }
-        }
-      `);
-      const names = data[group].nodes.map((node) =>
-        node.ambiguous ? `[${node.id}]${node.name}` : node.name,
-      );
-      return await fs.writeFile(`data/${entity}.json`, JSON.stringify(names));
-    }),
+    data.map(([entity, names]) =>
+      fs.writeFile(`data/${entity}.json`, JSON.stringify(names)),
+    ),
   );
 }
 
