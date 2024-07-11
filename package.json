@@ -9,6 +9,7 @@
     "libram"
   ],
   "author": "Patrick Hulin",
+  "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "build": "yarn run tsc",
@@ -17,7 +18,7 @@
     "format": "yarn run prettier --write .",
     "lint": "yarn run eslint lib tests/lib --ext .ts",
     "prepack": "yarn run build && yarn run updateData",
-    "test": "mocha tests --recursive --extension ts --require tsx",
+    "test": "vitest --globals",
     "updateData": "node --import tsx update-data.mjs",
     "watch": "yarn run tsc --watch"
   },
@@ -30,21 +31,25 @@
     "html-entities": "^2.5.2",
     "requireindex": "~1.2.0"
   },
+  "optionalDependencies": {
+    "graphql": "^16.9.0",
+    "graphql-request": "^7.1.0"
+  },
   "devDependencies": {
-    "@types/eslint": "^8.56.10",
+    "@eslint/js": "^9.6.0",
+    "@types/eslint__js": "^8.42.3",
     "@types/estree": "1.0.5",
-    "@types/node": "^20.10.4",
+    "@types/node": "^20.14.10",
     "@types/node-fetch": "^2.6.11",
     "@types/requireindex": "^1.2.4",
-    "@typescript-eslint/eslint-plugin": "^7.16.0",
-    "@typescript-eslint/parser": "^7.16.0",
-    "eslint": "^8.57.0",
+    "eslint": "^9.6.0",
     "graphql": "^16.9.0",
     "graphql-request": "^7.1.0",
-    "mocha": "^10.6.0",
     "prettier": "^3.3.2",
     "tsx": "^4.16.2",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^8.0.0-alpha.41",
+    "vitest": "^2.0.2"
   },
   "engines": {
     "node": ">=18.0.0"
