@@ -7,7 +7,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from "../../../lib/rules/verify-constants";
+import * as rule from "../../../lib/rules/verify-constants";
 import { RuleTester } from "eslint";
 
 //------------------------------------------------------------------------------
