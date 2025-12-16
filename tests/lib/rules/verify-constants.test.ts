@@ -14,7 +14,7 @@ import { RuleTester } from "eslint";
 // Tests
 //------------------------------------------------------------------------------
 
-const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
+const ruleTester = new RuleTester();
 ruleTester.run("verify-constants", rule, {
   valid: [
     {
@@ -178,10 +178,21 @@ ruleTester.run("verify-constants", rule, {
     },
     {
       code: "$effect`Hip to the Jive`",
-      output: "$effect`Hip to the Jive`",
+      output: null,
+      // Ambiguous effect with two possible ids
       errors: [
         {
           message: 'Ambiguous value name "Hip to the Jive".',
+          suggestions: [
+            {
+              desc: "Change enumerated value to [1701]Hip to the Jive",
+              output: "$effect`[1701]Hip to the Jive`",
+            },
+            {
+              desc: "Change enumerated value to [1872]Hip to the Jive",
+              output: "$effect`[1872]Hip to the Jive`",
+            },
+          ],
         },
       ],
     },

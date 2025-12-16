@@ -1,8 +1,15 @@
-import { readFileSync } from "fs";
+import * as fs from "fs";
 import { decode as decodeEntities } from "html-entities";
 
 // Minimum length of substrings before checking for matches.
 const SUBSTRING_MIN_LENGTH = 5;
+
+function isValidDatafile(data: unknown): data is string[] {
+  if (!data) return false;
+  if (!Array.isArray(data)) return false;
+  if (!data.every((entry) => typeof entry === "string")) return false;
+  return true;
+}
 
 class TagInfo {
   filename: string;
@@ -19,14 +26,22 @@ class TagInfo {
     this.filename = `${plural}.json`;
   }
 
-  load(data?: string[]) {
+  load(data: string[] = []) {
     if (this.loaded) return;
 
-    data ??= JSON.parse(
-      readFileSync(`${import.meta.dirname}/../data/${this.filename}`, {
-        encoding: "utf-8",
-      }),
-    ) as string[];
+    if (data.length === 0) {
+      const dataFile = `${import.meta.dirname}/../data/${this.filename}`;
+      if (fs.existsSync(dataFile)) {
+        const dataFileContents = JSON.parse(
+          fs.readFileSync(dataFile, {
+            encoding: "utf-8",
+          }),
+        );
+        if (isValidDatafile(dataFileContents)) {
+          data = dataFileContents;
+        }
+      }
+    }
 
     this.data = ["none", ...data.map((s) => decodeEntities(s))];
 
