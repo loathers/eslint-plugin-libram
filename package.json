@@ -18,7 +18,8 @@
     "format": "yarn run prettier --write .",
     "lint": "yarn run eslint lib tests/lib --ext .ts",
     "prepack": "yarn run build && yarn run updateData",
-    "test": "yarn run updateData && vitest --globals",
+    "test": "yarn run updateData && vitest",
+    "coverage": "yarn run updateData && vitest run --coverage",
     "updateData": "node --import tsx lib/loadData.js",
     "watch": "yarn run tsc --watch"
   },
@@ -39,6 +40,7 @@
     "@types/node-fetch": "^2.6.13",
     "@types/requireindex": "^1.2.4",
     "@typescript-eslint/rule-tester": "^8.50.0",
+    "@vitest/coverage-v8": "4.0.15",
     "eslint": "^9.39.2",
     "jiti": "^2.6.1",
     "prettier": "^3.7.4",

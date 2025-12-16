@@ -7,6 +7,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
+import { afterAll, describe, it } from "vitest";
 import { rule } from "../../../lib/rules/verify-constants";
 import { RuleTester } from "@typescript-eslint/rule-tester";
 
@@ -14,7 +15,12 @@ import { RuleTester } from "@typescript-eslint/rule-tester";
 // Tests
 //------------------------------------------------------------------------------
 
+RuleTester.afterAll = afterAll;
+RuleTester.describe = describe;
+RuleTester.it = it;
+
 const ruleTester = new RuleTester();
+
 ruleTester.run("verify-constants", rule, {
   valid: [
     {
