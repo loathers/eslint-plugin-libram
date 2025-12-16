@@ -24,7 +24,7 @@ const plugin = {
 
 const recommended = {
   plugins: {
-    "example-typed-linting": plugin,
+    "eslint-plugin-libram": plugin,
   },
   rules,
 };
