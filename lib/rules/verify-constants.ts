@@ -1,128 +1,58 @@
-import { Rule } from "eslint";
-import * as ESTree from "estree";
-import { readFileSync } from "fs";
-import { decode as decodeEntities } from "html-entities";
+import { ESLintUtils } from "@typescript-eslint/utils";
 
-// Minimum length of substrings before checking for matches.
-const SUBSTRING_MIN_LENGTH = 5;
+import { decodeHTML as decodeEntities } from "entities";
 
-class TagInfo {
-  singular: string;
-  plural: string;
-  data: string[];
-  caseMap: Map<string, string>;
-  prefixSuffixMap: Map<string, string[]>;
+import { pluralTags, singularTags, tags } from "../tags.js";
+import { Position, TemplateElement } from "estree";
+import { SuggestionReportDescriptor } from "@typescript-eslint/utils/ts-eslint";
 
-  constructor(singular: string, plural: string, data: string[]) {
-    const dataParsed = ["none", ...data.map((s) => decodeEntities(s))];
-    this.singular = singular;
-    this.plural = plural;
-    this.data = dataParsed;
-    this.caseMap = new Map(dataParsed.map((s) => [s.toLowerCase(), s]));
+const createRule = ESLintUtils.RuleCreator(
+  (name) => `https://loathers.net/eslint/${name}`,
+);
 
-    const prefixSuffixSetMap = new Map<string, Set<string>>();
-    for (const element of dataParsed) {
-      const elementLower = element.toLowerCase();
-      const indices = Array.from(new Array(element.length).keys()).slice(
-        SUBSTRING_MIN_LENGTH,
-      );
-      for (const index of indices) {
-        for (const substring of [
-          elementLower.slice(element.length - index),
-          elementLower.slice(0, index),
-        ]) {
-          let wholeStrings = prefixSuffixSetMap.get(substring);
-          if (!wholeStrings) {
-            wholeStrings = new Set();
-            prefixSuffixSetMap.set(substring, wholeStrings);
-          }
-          wholeStrings.add(element);
-        }
-      }
-    }
-
-    this.prefixSuffixMap = new Map(
-      Array.from(prefixSuffixSetMap.entries()).map(([k, v]) => [
-        k,
-        Array.from(v),
-      ]),
-    );
-  }
-}
-
-function getJsonData(filename: string) {
-  return JSON.parse(
-    readFileSync(`${__dirname}/../../data/${filename}`, { encoding: "utf-8" }),
-  );
-}
-
-const tags = [
-  new TagInfo("$class", "$classes", getJsonData("classes.json")),
-  new TagInfo("$effect", "$effects", getJsonData("effects.json")),
-  new TagInfo("$familiar", "$familiars", getJsonData("familiars.json")),
-  new TagInfo("$item", "$items", getJsonData("items.json")),
-  new TagInfo("$location", "$locations", getJsonData("locations.json")),
-  new TagInfo("$monster", "$monsters", getJsonData("monsters.json")),
-  new TagInfo("$skill", "$skills", getJsonData("skills.json")),
-  new TagInfo("$path", "$paths", getJsonData("paths.json")),
+type Options = [
+  {
+    ignoreCapitalization?: boolean;
+    ignoreEntities?: boolean;
+    ignoreUnrecognized?: boolean;
+    data?: Partial<Record<string, string[]>>;
+  },
 ];
 
-const singularTags = new Map<string, TagInfo>(
-  tags.map((tagInfo) => [tagInfo.singular, tagInfo]),
-);
-const pluralTags = new Map<string, TagInfo>(
-  tags.map((tagInfo) => [tagInfo.plural, tagInfo]),
-);
+type MessageIds =
+  | "decodeHtmlEntities"
+  | "ambiguousValueName"
+  | "valueShouldBe"
+  | "changeValueTo"
+  | "unrecognizedValue"
+  | "shouldBeCapitalized"
+  | "invalidSeparator";
 
-const rule: Rule.RuleModule = {
-  meta: {
-    docs: {
-      description: "Verify enumerated type constants.",
-      category: "Fill me in",
-      recommended: false,
-    },
-    fixable: "code",
-    hasSuggestions: true,
-    schema: [
-      {
-        type: "object",
-        properties: {
-          ignoreCapitalization: {
-            type: "boolean",
-            default: false,
-          },
-          ignoreEntities: {
-            type: "boolean",
-            default: false,
-          },
-          ignoreUnrecognized: {
-            type: "boolean",
-            default: false,
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-  },
-
-  create(context: Rule.RuleContext) {
+export const rule = createRule<Options, MessageIds>({
+  name: "verify-constants",
+  create(context) {
     const sourceCode = context.sourceCode;
     const options = context.options[0];
 
-    function positionAdd(position: ESTree.Position, offset: number) {
+    // Allow user to provide custom data for testing or other purposes
+    pluralTags.forEach((tag) => {
+      tag.load(options?.data?.[tag.plural]);
+    });
+
+    function positionAdd(position: Position, offset: number) {
       return sourceCode.getLocFromIndex(
         sourceCode.getIndexFromLoc(position) + offset,
       );
     }
 
-    function splitWithLocation(quasi: ESTree.TemplateElement, pattern: RegExp) {
+    function splitWithLocation(quasi: TemplateElement, pattern: RegExp) {
       const startOffset = quasi.value.raw.match(/^\s*/)![0].length;
       const endOffset = quasi.value.raw.match(/\s*$/)![0].length;
       // We have to add/subtract one here to deal with the backticks.
       const start = positionAdd(quasi.loc!.start, startOffset + 1);
       const end = positionAdd(quasi.loc!.end, -endOffset - 1);
 
-      const result: [string, ESTree.Position, ESTree.Position][] = [];
+      const result: [string, Position, Position][] = [];
 
       let match = null;
       let lastMatch: RegExpExecArray | null = null;
@@ -157,19 +87,18 @@ const rule: Rule.RuleModule = {
     }
 
     return {
-      TaggedTemplateExpression(
-        node: ESTree.TaggedTemplateExpression & Rule.NodeParentExtension,
-      ) {
+      TaggedTemplateExpression(node) {
         // For now just don't check constants if they contain other template literal expressions
         if (node.quasi.expressions.length > 0) return;
         const tagText = sourceCode.getText(node.tag);
-        const singular = singularTags.get(tagText);
-        const plural = pluralTags.get(tagText);
-        const tagElements = singular ?? plural;
+        if (!tagText.startsWith("$")) return;
+        const tagName = tagText.slice(1);
+        const tagElements =
+          singularTags.get(tagName) ?? pluralTags.get(tagName);
         if (!tagElements) return;
 
         for (const quasi of node.quasi.quasis) {
-          const segments = plural
+          const segments = pluralTags.has(tagName)
             ? splitWithLocation(quasi, /\s*(?<!(?<!\\)\\),\s*/g)
             : splitWithLocation(quasi, /(?!)/g); // Never matches - don't split.
 
@@ -194,7 +123,11 @@ const rule: Rule.RuleModule = {
                 if (!options?.ignoreEntities) {
                   context.report({
                     node,
-                    message: `Enumerated value "${segment}" has HTML entities; should be "${decodedProperlyCapitalized}".`,
+                    messageId: "decodeHtmlEntities",
+                    data: {
+                      actual: segment,
+                      expected: decodedProperlyCapitalized,
+                    },
                     fix(fixer) {
                       return fixer.replaceTextRange(
                         range,
@@ -206,18 +139,18 @@ const rule: Rule.RuleModule = {
               } else if (disambiguations && disambiguations.length > 1) {
                 const suggestions = disambiguations.map((dis) => {
                   return {
-                    desc: `Change enumerated value to ${dis}`,
-                    fix: (fixer: Rule.RuleFixer) => {
-                      return fixer.replaceTextRange(
-                        range,
-                        dis.replace(",", "\\,"),
-                      );
-                    },
-                  };
+                    messageId: "changeValueTo",
+                    data: { expected: dis },
+                    fix: () => ({
+                      range,
+                      text: dis.replace(",", "\\,"),
+                    }),
+                  } satisfies SuggestionReportDescriptor<MessageIds>;
                 });
                 context.report({
                   node,
-                  message: `Ambiguous value name "${segment}".`,
+                  messageId: "ambiguousValueName",
+                  data: { actual: segment },
                   suggest: suggestions,
                 });
               } else if (
@@ -227,7 +160,8 @@ const rule: Rule.RuleModule = {
               ) {
                 context.report({
                   node,
-                  message: `Enumerated value "${segment}" should be "${disambiguations[0]}".`,
+                  messageId: "valueShouldBe",
+                  data: { actual: segment, expected: disambiguations[0] },
                   fix(fixer) {
                     return fixer.replaceTextRange(
                       range,
@@ -238,7 +172,8 @@ const rule: Rule.RuleModule = {
               } else if (!options?.ignoreUnrecognized && segment !== "") {
                 context.report({
                   node,
-                  message: `Unrecognized enumerated value name "${segment}".`,
+                  messageId: "unrecognizedValue",
+                  data: { actual: segment },
                 });
               }
             } else if (
@@ -247,7 +182,8 @@ const rule: Rule.RuleModule = {
             ) {
               context.report({
                 node,
-                message: `Enumerated value name "${segment}" should be capitalized "${properlyCapitalized}".`,
+                messageId: "shouldBeCapitalized",
+                data: { actual: segment, expected: properlyCapitalized },
                 fix(fixer) {
                   return fixer.replaceTextRange(range, properlyCapitalized);
                 },
@@ -262,8 +198,7 @@ const rule: Rule.RuleModule = {
           if (quasi.value.raw !== properlySpaced) {
             context.report({
               node,
-              message:
-                "Enumerated value constants should be separated by a comma and space.",
+              messageId: "invalidSeparator",
               fix(fixer) {
                 const [start, end] = quasi.range!;
                 return fixer.replaceTextRange(
@@ -277,6 +212,62 @@ const rule: Rule.RuleModule = {
       },
     };
   },
-};
-
-export = rule;
+  defaultOptions: [
+    {
+      ignoreCapitalization: false,
+      ignoreEntities: false,
+      ignoreUnrecognized: false,
+      data: {},
+    },
+  ],
+  meta: {
+    docs: {
+      description: "Verify enumerated type constants.",
+    },
+    messages: {
+      decodeHtmlEntities:
+        'Enumerated value "{{actual}}" has HTML entities; should be "{{expected}}".',
+      ambiguousValueName: 'Ambiguous value name "{{actual}}".',
+      valueShouldBe: 'Enumerated value "{{actual}}" should be "{{expected}}".',
+      changeValueTo: `Change enumerated value to "{{expected}}"`,
+      unrecognizedValue: `Unrecognized enumerated value name "{{actual}}".`,
+      shouldBeCapitalized: `Enumerated value name "{{actual}}" should be capitalized "{{expected}}".`,
+      invalidSeparator: `Enumerated value constants should be separated by a comma and space.`,
+    },
+    fixable: "code",
+    hasSuggestions: true,
+    type: "suggestion",
+    schema: [
+      {
+        type: "object",
+        properties: {
+          ignoreCapitalization: {
+            type: "boolean",
+            default: false,
+          },
+          ignoreEntities: {
+            type: "boolean",
+            default: false,
+          },
+          ignoreUnrecognized: {
+            type: "boolean",
+            default: false,
+          },
+          data: {
+            type: "object",
+            default: {},
+            properties: tags.reduce(
+              (acc, tag) => ({
+                ...acc,
+                [tag.plural]: { type: "array", items: { type: "string" } },
+              }),
+              {},
+            ),
+            additionalProperties: false,
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
+  },
+});

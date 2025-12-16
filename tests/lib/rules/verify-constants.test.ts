@@ -7,14 +7,20 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from "../../../lib/rules/verify-constants";
-import { RuleTester } from "eslint";
+import { afterAll, describe, it } from "vitest";
+import { rule } from "../../../lib/rules/verify-constants";
+import { RuleTester } from "@typescript-eslint/rule-tester";
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
+RuleTester.afterAll = afterAll;
+RuleTester.describe = describe;
+RuleTester.it = it;
+
+const ruleTester = new RuleTester();
+
 ruleTester.run("verify-constants", rule, {
   valid: [
     {
@@ -83,6 +89,16 @@ ruleTester.run("verify-constants", rule, {
     {
       code: "$items`Gene Tonic: ${phylum1}, Gene Tonic: ${phylum2}`",
     },
+    {
+      code: "$item`gausie`",
+      options: [
+        {
+          data: {
+            items: ["gausie"],
+          },
+        },
+      ],
+    },
   ],
 
   invalid: [
@@ -91,8 +107,11 @@ ruleTester.run("verify-constants", rule, {
       output: "$item`hair spray`",
       errors: [
         {
-          message:
-            'Enumerated value name "Hair Spray" should be capitalized "hair spray".',
+          messageId: "shouldBeCapitalized",
+          data: {
+            actual: "Hair Spray",
+            expected: "hair spray",
+          },
         },
       ],
     },
@@ -101,8 +120,11 @@ ruleTester.run("verify-constants", rule, {
       output: "$item`Newbiesport™ tent`",
       errors: [
         {
-          message:
-            'Enumerated value "Newbiesport&trade; tent" has HTML entities; should be "Newbiesport™ tent".',
+          messageId: "decodeHtmlEntities",
+          data: {
+            actual: "Newbiesport&trade; tent",
+            expected: "Newbiesport™ tent",
+          },
         },
       ],
     },
@@ -111,15 +133,24 @@ ruleTester.run("verify-constants", rule, {
       output: "$items`hair spray, Newbiesport™ tent, buged bÃ¶n±Ã©t`",
       errors: [
         {
-          message:
-            'Enumerated value name "Hair Spray" should be capitalized "hair spray".',
+          messageId: "shouldBeCapitalized",
+          data: {
+            actual: "Hair Spray",
+            expected: "hair spray",
+          },
         },
         {
-          message:
-            'Enumerated value "Newbiesport&trade; tent" has HTML entities; should be "Newbiesport™ tent".',
+          messageId: "decodeHtmlEntities",
+          data: {
+            actual: "Newbiesport&trade; tent",
+            expected: "Newbiesport™ tent",
+          },
         },
         {
-          message: 'Unrecognized enumerated value name "buged bÃ¶n±Ã©t".',
+          messageId: "unrecognizedValue",
+          data: {
+            actual: "buged bÃ¶n±Ã©t",
+          },
         },
       ],
     },
@@ -128,11 +159,17 @@ ruleTester.run("verify-constants", rule, {
       output: "$effects`And Your Family\\, Too, Too`",
       errors: [
         {
-          message:
-            'Enumerated value "And Your Family" should be "And Your Family, Too".',
+          messageId: "valueShouldBe",
+          data: {
+            actual: "And Your Family",
+            expected: "And Your Family, Too",
+          },
         },
         {
-          message: 'Unrecognized enumerated value name "Too".',
+          messageId: "unrecognizedValue",
+          data: {
+            actual: "Too",
+          },
         },
       ],
     },
@@ -141,8 +178,11 @@ ruleTester.run("verify-constants", rule, {
       output: "$skill`Fat Leon's Phat Loot Lyric`",
       errors: [
         {
-          message:
-            'Enumerated value name "fat leon\'s phat loot lyric" should be capitalized "Fat Leon\'s Phat Loot Lyric".',
+          messageId: "shouldBeCapitalized",
+          data: {
+            actual: "fat leon's phat loot lyric",
+            expected: "Fat Leon's Phat Loot Lyric",
+          },
         },
       ],
     },
@@ -151,8 +191,11 @@ ruleTester.run("verify-constants", rule, {
       output: "$class`Vampyre`",
       errors: [
         {
-          message:
-            'Enumerated value name "vampyre" should be capitalized "Vampyre".',
+          messageId: "shouldBeCapitalized",
+          data: {
+            actual: "vampyre",
+            expected: "Vampyre",
+          },
         },
       ],
     },
@@ -161,8 +204,11 @@ ruleTester.run("verify-constants", rule, {
       output: "$location`The Middle Chamber`",
       errors: [
         {
-          message:
-            'Enumerated value name "the middle chamber" should be capitalized "The Middle Chamber".',
+          messageId: "shouldBeCapitalized",
+          data: {
+            actual: "the middle chamber",
+            expected: "The Middle Chamber",
+          },
         },
       ],
     },
@@ -171,17 +217,36 @@ ruleTester.run("verify-constants", rule, {
       output: "$items`hair spray, glittery mascara, Ben-Gal™ Balm`",
       errors: [
         {
-          message:
-            "Enumerated value constants should be separated by a comma and space.",
+          messageId: "invalidSeparator",
         },
       ],
     },
     {
       code: "$effect`Hip to the Jive`",
-      output: "$effect`Hip to the Jive`",
+      output: null,
+      // Ambiguous effect with two possible ids
       errors: [
         {
-          message: 'Ambiguous value name "Hip to the Jive".',
+          messageId: "ambiguousValueName",
+          data: {
+            actual: "Hip to the Jive",
+          },
+          suggestions: [
+            {
+              messageId: "changeValueTo",
+              data: {
+                expected: "[1701]Hip to the Jive",
+              },
+              output: "$effect`[1701]Hip to the Jive`",
+            },
+            {
+              messageId: "changeValueTo",
+              data: {
+                expected: "[1872]Hip to the Jive",
+              },
+              output: "$effect`[1872]Hip to the Jive`",
+            },
+          ],
         },
       ],
     },
@@ -190,8 +255,11 @@ ruleTester.run("verify-constants", rule, {
       output: "$effect`Plump and Chubby`",
       errors: [
         {
-          message:
-            'Enumerated value "plump and chub" should be "Plump and Chubby".',
+          messageId: "valueShouldBe",
+          data: {
+            actual: "plump and chub",
+            expected: "Plump and Chubby",
+          },
         },
       ],
     },
