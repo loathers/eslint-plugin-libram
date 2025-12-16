@@ -26,7 +26,7 @@ async function getRemoteRevision() {
   );
 }
 
-export async function since(requestedRevision?: number) {
+export async function verifyConstantsSinceRevision(requestedRevision?: number) {
   if (!(await exists(DATA_LOCATION))) await fs.mkdir(DATA_LOCATION);
 
   const localRevisionPath = `${DATA_LOCATION}/revision.json`;
@@ -123,5 +123,5 @@ export async function since(requestedRevision?: number) {
 
 if (import.meta.main) {
   console.log("Importing latest data...");
-  await since();
+  await verifyConstantsSinceRevision();
 }

@@ -31,4 +31,4 @@ const recommended = {
 
 export default plugin;
 
-export { since } from "./loadData.js";
+export { verifyConstantsSinceRevision } from "./loadData.js";
