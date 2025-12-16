@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { decode as decodeEntities } from "html-entities";
+import { decodeHTML as decodeEntities } from "entities";
 
 // Minimum length of substrings before checking for matches.
 const SUBSTRING_MIN_LENGTH = 5;

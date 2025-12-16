@@ -29,8 +29,8 @@
     "data/*.json"
   ],
   "dependencies": {
-    "html-entities": "^2.6.0",
-    "requireindex": "~1.2.0"
+    "data-of-loathing": "^2.6.2",
+    "entities": "^7.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
@@ -38,7 +38,6 @@
     "@types/estree": "1.0.8",
     "@types/node": "^25.0.2",
     "@types/node-fetch": "^2.6.13",
-    "@types/requireindex": "^1.2.4",
     "@typescript-eslint/rule-tester": "^8.50.0",
     "@vitest/coverage-v8": "4.0.15",
     "eslint": "^9.39.2",
@@ -53,8 +52,5 @@
     "node": ">=22.0.0"
   },
   "license": "MIT",
-  "packageManager": "yarn@4.3.1",
-  "optionalDependencies": {
-    "data-of-loathing": "^2.6.2"
-  }
+  "packageManager": "yarn@4.3.1"
 }

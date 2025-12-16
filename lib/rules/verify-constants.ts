@@ -1,6 +1,6 @@
 import { ESLintUtils } from "@typescript-eslint/utils";
 
-import { decode as decodeEntities } from "html-entities";
+import { decodeHTML as decodeEntities } from "entities";
 
 import { pluralTags, singularTags, tags } from "../tags.js";
 import { Position, TemplateElement } from "estree";

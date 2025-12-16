@@ -656,13 +656,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/requireindex@npm:^1.2.4":
-  version: 1.2.4
-  resolution: "@types/requireindex@npm:1.2.4"
-  checksum: 10c0/7ad0d1128ad2e091aa76b4cdc4f4b41305a18f890a859358182dfba0a6080fc47ceb0f2a12061ef41b4b98fa9669d99247173f97bf4b1c3a01a4eac94e843f55
-  languageName: node
-  linkType: hard
-
 "@typescript-eslint/eslint-plugin@npm:8.50.0":
   version: 8.50.0
   resolution: "@typescript-eslint/eslint-plugin@npm:8.50.0"
@@ -1307,6 +1300,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"entities@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "entities@npm:7.0.0"
+  checksum: 10c0/4e7cc40cd00b64adede81780fd85c0bd0a905e863b5ef0b01718028ffbc113886c281deb57e1ce0e13a6e349a2d404ff383c876673b81d6dc56e87bf3e5a022a
+  languageName: node
+  linkType: hard
+
 "env-paths@npm:^2.2.0":
   version: 2.2.1
   resolution: "env-paths@npm:2.2.1"
@@ -1468,22 +1468,17 @@ __metadata:
     "@types/estree": "npm:1.0.8"
     "@types/node": "npm:^25.0.2"
     "@types/node-fetch": "npm:^2.6.13"
-    "@types/requireindex": "npm:^1.2.4"
     "@typescript-eslint/rule-tester": "npm:^8.50.0"
     "@vitest/coverage-v8": "npm:4.0.15"
     data-of-loathing: "npm:^2.6.2"
+    entities: "npm:^7.0.0"
     eslint: "npm:^9.39.2"
-    html-entities: "npm:^2.6.0"
     jiti: "npm:^2.6.1"
     prettier: "npm:^3.7.4"
-    requireindex: "npm:~1.2.0"
     tsx: "npm:^4.21.0"
     typescript: "npm:^5.9.3"
     typescript-eslint: "npm:^8.50.0"
     vitest: "npm:^4.0.15"
-  dependenciesMeta:
-    data-of-loathing:
-      optional: true
   languageName: unknown
   linkType: soft
 
@@ -1902,13 +1897,6 @@ __metadata:
   dependencies:
     function-bind: "npm:^1.1.2"
   checksum: 10c0/3769d434703b8ac66b209a4cca0737519925bbdb61dd887f93a16372b14694c63ff4e797686d87c90f08168e81082248b9b028bad60d4da9e0d1148766f56eb9
-  languageName: node
-  linkType: hard
-
-"html-entities@npm:^2.6.0":
-  version: 2.6.0
-  resolution: "html-entities@npm:2.6.0"
-  checksum: 10c0/7c8b15d9ea0cd00dc9279f61bab002ba6ca8a7a0f3c36ed2db3530a67a9621c017830d1d2c1c65beb9b8e3436ea663e9cf8b230472e0e413359399413b27c8b7
   languageName: node
   linkType: hard
 
@@ -2604,13 +2592,6 @@ __metadata:
   version: 2.3.0
   resolution: "punycode@npm:2.3.0"
   checksum: 10c0/8e6f7abdd3a6635820049e3731c623bbef3fedbf63bbc696b0d7237fdba4cefa069bc1fa62f2938b0fbae057550df7b5318f4a6bcece27f1907fc75c54160bee
-  languageName: node
-  linkType: hard
-
-"requireindex@npm:~1.2.0":
-  version: 1.2.0
-  resolution: "requireindex@npm:1.2.0"
-  checksum: 10c0/7fb42aed73bf8de9acc4d6716cf07acc7fbe180e58729433bafcf702e76e7bb10e54f8266c06bfec62d752e0ac14d50e8758833de539e6f4e2cd642077866153
   languageName: node
   linkType: hard
 
