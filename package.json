@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-libram",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Eslint rules for Libram",
   "keywords": [
     "eslint",
@@ -16,10 +16,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "yarn run tsc",
-    "clean": "rm -f {lib,dist,tests}/*.js {lib,dist,tests}/*.d.ts {lib,dist,tests}/**/*.js {lib,dist,tests}/**/*.d.ts",
     "format": "yarn run prettier --write .",
     "lint": "yarn run eslint --ext .ts",
-    "prepack": "yarn run build && yarn run updateData",
     "test": "yarn run updateData && vitest",
     "coverage": "yarn run updateData && vitest run --coverage",
     "updateData": "node --import tsx lib/loadData.js",

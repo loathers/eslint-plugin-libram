@@ -37,6 +37,8 @@ jobs:
         if: ${{ steps.check.outputs.status == '404' }}
         run: |
           yarn
+          yarn build
+          yarn updateData
           npm publish
         env:
           STATUS: ${{ steps.check.outputs.status }}
