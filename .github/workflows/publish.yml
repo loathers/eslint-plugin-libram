@@ -35,7 +35,7 @@ jobs:
 
       - name: Exit if already published
         if: ${{ steps.check.outputs.status != '404' }}
-        run: exit 1
+        run: exit 0
         env:
           STATUS: ${{ steps.check.outputs.status }}
 
