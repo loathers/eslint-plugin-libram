@@ -38,6 +38,7 @@
     "@types/node": "^25.0.2",
     "@types/node-fetch": "^2.6.13",
     "@types/requireindex": "^1.2.4",
+    "@typescript-eslint/rule-tester": "^8.50.0",
     "eslint": "^9.39.2",
     "jiti": "^2.6.1",
     "prettier": "^3.7.4",

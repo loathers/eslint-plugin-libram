@@ -26,8 +26,10 @@ class TagInfo {
     this.filename = `${plural}.json`;
   }
 
-  load(data: string[] = []) {
-    if (this.loaded) return;
+  load(custom: string[] = []) {
+    if (custom.length === 0 && this.loaded) return;
+
+    const data = [...custom];
 
     const dataFile = `${import.meta.dirname}/../data/${this.filename}`;
     if (fs.existsSync(dataFile)) {
