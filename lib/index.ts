@@ -19,4 +19,4 @@ const plugin: ESLint.Plugin = {
 
 export default plugin;
 
-export { loadData } from "./loadData.js";
+export { since } from "./loadData.js";

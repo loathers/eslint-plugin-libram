@@ -2,7 +2,7 @@ import { Rule } from "eslint";
 import * as ESTree from "estree";
 import { decode as decodeEntities } from "html-entities";
 
-import { Plurals, pluralTags, singularTags, tags } from "../tags.js";
+import { pluralTags, singularTags, tags } from "../tags.js";
 
 export const meta: Rule.RuleMetaData = {
   docs: {
@@ -50,14 +50,14 @@ type Options = {
   ignoreCapitalization: boolean;
   ignoreEntities: boolean;
   ignoreUnrecognized: boolean;
-  data: Partial<Record<Plurals, string[]>>;
+  data: Partial<Record<string, string[]>>;
 };
 
 export function create(context: Rule.RuleContext): Rule.RuleListener {
   const sourceCode = context.sourceCode;
   const options = context.options[0] as Options | undefined;
 
-  // Load from provided data else data contained in the plugin.
+  // Allow user to provide custom data for testing or other purposes
   pluralTags.forEach((tag) => {
     tag.load(options?.data[tag.plural]);
   });

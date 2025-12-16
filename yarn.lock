@@ -289,15 +289,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-typed-document-node/core@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "@graphql-typed-document-node/core@npm:3.2.0"
-  peerDependencies:
-    graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/94e9d75c1f178bbae8d874f5a9361708a3350c8def7eaeb6920f2c820e82403b7d4f55b3735856d68e145e86c85cbfe2adc444fdc25519cd51f108697e99346c
-  languageName: node
-  linkType: hard
-
 "@humanfs/core@npm:^0.19.1":
   version: 0.19.1
   resolution: "@humanfs/core@npm:0.19.1"
@@ -1106,6 +1097,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"data-of-loathing@npm:^2.6.2":
+  version: 2.6.2
+  resolution: "data-of-loathing@npm:2.6.2"
+  checksum: 10c0/160be95e0886d797ddde79d25285cd3a09861097ac9131b7ceb5f2119648ba31d5d0ed1322e31a607140e9b610580095b95b4b6f72057790e12b1abd67ecbc17
+  languageName: node
+  linkType: hard
+
 "debug@npm:4, debug@npm:^4.3.1":
   version: 4.3.5
   resolution: "debug@npm:4.3.5"
@@ -1347,9 +1345,8 @@ __metadata:
     "@types/node": "npm:^25.0.2"
     "@types/node-fetch": "npm:^2.6.13"
     "@types/requireindex": "npm:^1.2.4"
+    data-of-loathing: "npm:^2.6.2"
     eslint: "npm:^9.39.2"
-    graphql: "npm:^16.12.0"
-    graphql-request: "npm:^7.4.0"
     html-entities: "npm:^2.6.0"
     jiti: "npm:^2.6.1"
     prettier: "npm:^3.7.4"
@@ -1359,9 +1356,7 @@ __metadata:
     typescript-eslint: "npm:^8.50.0"
     vitest: "npm:^4.0.15"
   dependenciesMeta:
-    graphql:
-      optional: true
-    graphql-request:
+    data-of-loathing:
       optional: true
   languageName: unknown
   linkType: soft
@@ -1749,24 +1744,6 @@ __metadata:
   version: 4.2.11
   resolution: "graceful-fs@npm:4.2.11"
   checksum: 10c0/386d011a553e02bc594ac2ca0bd6d9e4c22d7fa8cfbfc448a6d148c59ea881b092db9dbe3547ae4b88e55f1b01f7c4a2ecc53b310c042793e63aa44cf6c257f2
-  languageName: node
-  linkType: hard
-
-"graphql-request@npm:^7.4.0":
-  version: 7.4.0
-  resolution: "graphql-request@npm:7.4.0"
-  dependencies:
-    "@graphql-typed-document-node/core": "npm:^3.2.0"
-  peerDependencies:
-    graphql: 14 - 16
-  checksum: 10c0/066531d70b9c4656251e51c950ce9bee3df05291e12e2b983608d75ac3a70d700efd6488d273b043235dc125658973db38b21eba59e808863831a5a19a6a7b41
-  languageName: node
-  linkType: hard
-
-"graphql@npm:^16.12.0":
-  version: 16.12.0
-  resolution: "graphql@npm:16.12.0"
-  checksum: 10c0/b6fffa4e8a4e4a9933ebe85e7470b346dbf49050c1a482fac5e03e4a1a7bed2ecd3a4c97e29f04457af929464bc5e4f2aac991090c2f320111eef26e902a5c75
   languageName: node
   linkType: hard
 

@@ -13,14 +13,14 @@ function isValidDatafile(data: unknown): data is string[] {
 
 class TagInfo {
   filename: string;
-  singular: Singulars;
-  plural: Plurals;
+  singular: string;
+  plural: string;
   data: string[] = [];
   caseMap: Map<string, string> = new Map();
   prefixSuffixMap: Map<string, string[]> = new Map();
   loaded = false;
 
-  constructor(singular: Singulars, plural: Plurals) {
+  constructor(singular: string, plural: string) {
     this.singular = singular;
     this.plural = plural;
     this.filename = `${plural}.json`;
@@ -29,17 +29,15 @@ class TagInfo {
   load(data: string[] = []) {
     if (this.loaded) return;
 
-    if (data.length === 0) {
-      const dataFile = `${import.meta.dirname}/../data/${this.filename}`;
-      if (fs.existsSync(dataFile)) {
-        const dataFileContents = JSON.parse(
-          fs.readFileSync(dataFile, {
-            encoding: "utf-8",
-          }),
-        );
-        if (isValidDatafile(dataFileContents)) {
-          data = dataFileContents;
-        }
+    const dataFile = `${import.meta.dirname}/../data/${this.filename}`;
+    if (fs.existsSync(dataFile)) {
+      const dataFileContents = JSON.parse(
+        fs.readFileSync(dataFile, {
+          encoding: "utf-8",
+        }),
+      );
+      if (isValidDatafile(dataFileContents)) {
+        data.push(...dataFileContents);
       }
     }
 
@@ -79,24 +77,16 @@ class TagInfo {
   }
 }
 
-// Singular, plural, require disambiguation
-export const ALL_TAGS = [
-  ["class", "classes", false],
-  ["effect", "effects", true],
-  ["familiar", "familiars", false],
-  ["item", "items", true],
-  ["location", "locations", false],
-  ["monster", "monsters", true],
-  ["path", "paths", false],
-  ["skill", "skills", true],
-] as const;
-
-export type Singulars = (typeof ALL_TAGS)[number][0];
-export type Plurals = (typeof ALL_TAGS)[number][1];
-
-export const tags = ALL_TAGS.map(
-  ([singular, plural]) => new TagInfo(singular, plural),
-);
+export const tags = [
+  ["class", "classes"],
+  ["effect", "effects"],
+  ["familiar", "familiars"],
+  ["item", "items"],
+  ["location", "locations"],
+  ["monster", "monsters"],
+  ["path", "paths"],
+  ["skill", "skills"],
+].map(([singular, plural]) => new TagInfo(singular, plural));
 
 export const singularTags = new Map<string, TagInfo>(
   tags.map((tagInfo) => [tagInfo.singular, tagInfo]),
