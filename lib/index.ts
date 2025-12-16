@@ -22,12 +22,16 @@ const plugin = {
   processors: {},
 };
 
-const recommended = {
-  plugins: {
-    "eslint-plugin-libram": plugin,
+const recommended = [
+  {
+    plugins: {
+      libram: plugin,
+    },
+    rules: {
+      "libram/verify-constants": "error",
+    },
   },
-  rules,
-};
+];
 
 export default plugin;
 
