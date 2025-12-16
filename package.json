@@ -8,6 +8,9 @@
     "eslint-plugin",
     "libram"
   ],
+  "repository": {
+    "url": "https://github.com/loathers/eslint-plugin-libram"
+  },
   "author": "Patrick Hulin",
   "type": "module",
   "main": "dist/index.js",
