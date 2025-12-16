@@ -11,7 +11,7 @@ const rules = {
 const plugin = {
   meta: {
     name: "eslint-plugin-libram",
-    version: "0.5.2",
+    version: "0.5.3",
   },
   configs: {
     get recommended() {
