@@ -14,7 +14,6 @@
   "scripts": {
     "build": "yarn run tsc",
     "clean": "rm -f {lib,dist,tests}/*.js {lib,dist,tests}/*.d.ts {lib,dist,tests}/**/*.js {lib,dist,tests}/**/*.d.ts",
-    "docs": "yarn run typedoc",
     "format": "yarn run prettier --write .",
     "lint": "yarn run eslint --ext .ts",
     "prepack": "yarn run build && yarn run updateData",
