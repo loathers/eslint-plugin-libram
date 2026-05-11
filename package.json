@@ -29,7 +29,7 @@
     "data/*.json"
   ],
   "dependencies": {
-    "data-of-loathing": "^2.6.2",
+    "data-of-loathing": "^3.2.2",
     "entities": "^7.0.0"
   },
   "devDependencies": {
