@@ -107,7 +107,7 @@ export const rule = createRule<Options, MessageIds>({
               sourceCode.getIndexFromLoc(start),
               sourceCode.getIndexFromLoc(end),
             ];
-            const segment = segmentRaw.replace(/(?<!\\)\\,/, ",");
+            const segment = segmentRaw.replaceAll(/(?<!\\)\\,/g, ",");
             const lowerCaseSegment = segment.toLowerCase();
             const properlyCapitalized =
               tagElements.caseMap.get(lowerCaseSegment);
@@ -143,7 +143,7 @@ export const rule = createRule<Options, MessageIds>({
                     data: { expected: dis },
                     fix: () => ({
                       range,
-                      text: dis.replace(",", "\\,"),
+                      text: dis.replaceAll(",", "\\,"),
                     }),
                   } satisfies SuggestionReportDescriptor<MessageIds>;
                 });
@@ -165,7 +165,7 @@ export const rule = createRule<Options, MessageIds>({
                   fix(fixer) {
                     return fixer.replaceTextRange(
                       range,
-                      disambiguations[0].replace(",", "\\,"),
+                      disambiguations[0].replaceAll(",", "\\,"),
                     );
                   },
                 });
