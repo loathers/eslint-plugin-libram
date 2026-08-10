@@ -98,7 +98,8 @@ export const rule = createRule<Options, MessageIds>({
         if (!tagElements) return;
 
         for (const quasi of node.quasi.quasis) {
-          const segments = pluralTags.has(tagName)
+          const isPlural = pluralTags.has(tagName);
+          const segments = isPlural
             ? splitWithLocation(quasi, /\s*(?<!(?<!\\)\\),\s*/g)
             : splitWithLocation(quasi, /(?!)/g); // Never matches - don't split.
 
@@ -107,7 +108,9 @@ export const rule = createRule<Options, MessageIds>({
               sourceCode.getIndexFromLoc(start),
               sourceCode.getIndexFromLoc(end),
             ];
-            const segment = segmentRaw.replaceAll(/(?<!\\)\\,/g, ",");
+            const segment = isPlural
+              ? segmentRaw.replaceAll(/(?<!\\)\\,/g, ",")
+              : segmentRaw;
             const lowerCaseSegment = segment.toLowerCase();
             const properlyCapitalized =
               tagElements.caseMap.get(lowerCaseSegment);
@@ -143,7 +146,7 @@ export const rule = createRule<Options, MessageIds>({
                     data: { expected: dis },
                     fix: () => ({
                       range,
-                      text: dis.replaceAll(",", "\\,"),
+                      text: isPlural ? dis.replaceAll(",", "\\,") : dis,
                     }),
                   } satisfies SuggestionReportDescriptor<MessageIds>;
                 });
@@ -165,7 +168,9 @@ export const rule = createRule<Options, MessageIds>({
                   fix(fixer) {
                     return fixer.replaceTextRange(
                       range,
-                      disambiguations[0].replaceAll(",", "\\,"),
+                      isPlural
+                        ? disambiguations[0].replaceAll(",", "\\,")
+                        : disambiguations[0],
                     );
                   },
                 });
