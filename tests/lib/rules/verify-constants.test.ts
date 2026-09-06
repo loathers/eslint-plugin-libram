@@ -69,6 +69,9 @@ ruleTester.run("verify-constants", rule, {
       code: "$skill`Fat Leon's Phat Loot Lyric`",
     },
     {
+      code: "$skill`Dimples, How Merry!`",
+    },
+    {
       code: "$class`Vampyre`",
     },
     {
@@ -182,6 +185,17 @@ ruleTester.run("verify-constants", rule, {
           data: {
             actual: "fat leon's phat loot lyric",
             expected: "Fat Leon's Phat Loot Lyric",
+          },
+        },
+      ],
+    },
+    {
+      code: "$skill`Dimples\\, How Merry!`",
+      errors: [
+        {
+          messageId: "unrecognizedValue",
+          data: {
+            actual: "Dimples\\, How Merry!",
           },
         },
       ],
