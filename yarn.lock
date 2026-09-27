@@ -401,25 +401,25 @@ __metadata:
   linkType: hard
 
 "@mikro-orm/core@npm:^7.0.14":
-  version: 7.0.15
-  resolution: "@mikro-orm/core@npm:7.0.15"
+  version: 7.1.5
+  resolution: "@mikro-orm/core@npm:7.1.5"
   peerDependencies:
     dataloader: 2.2.3
   peerDependenciesMeta:
     dataloader:
       optional: true
-  checksum: 10c0/9dd237c086ef9603f336156557181dcaaa4a74f865b5795dce86f14655832d936186dee011fbb38b7086477e6f6cb13be25cd3bac9c2c62fb80cf306028f6207
+  checksum: 10c0/b6e60f3326000949f6bfa405cb2695a4bac985c94bed7d24242a57370dcdc1d0174405fa70693714896d70dbcf8fd5e1df864f009b1cbc1e6b0cff9cf4b4a45a
   languageName: node
   linkType: hard
 
 "@mikro-orm/sql@npm:^7.0.14":
-  version: 7.0.15
-  resolution: "@mikro-orm/sql@npm:7.0.15"
+  version: 7.1.5
+  resolution: "@mikro-orm/sql@npm:7.1.5"
   dependencies:
-    kysely: "npm:0.28.17"
+    kysely: "npm:0.29.2"
   peerDependencies:
-    "@mikro-orm/core": 7.0.15
-  checksum: 10c0/1d7aacccd2da0d80e954367b427253f47dc4a23f4ff4fed14fc69f05a66c0ada97e29a0ed4aab58a4e073684f461eab8600fbee485a60264a73a576360ccac1e
+    "@mikro-orm/core": 7.1.5
+  checksum: 10c0/2fbff581642635c5e3b588680e33ae560c41ff9ca8b4d9c98899b2d1ac5b223a0de4cceab1dedece786ae7926471b1cd106954ce3b62eb2fe750687716db37b4
   languageName: node
   linkType: hard
 
@@ -1232,9 +1232,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"data-of-loathing@npm:^3.2.2":
-  version: 3.2.2
-  resolution: "data-of-loathing@npm:3.2.2"
+"data-of-loathing@npm:^4.3.1":
+  version: 4.3.1
+  resolution: "data-of-loathing@npm:4.3.1"
   dependencies:
     "@mikro-orm/core": "npm:^7.0.14"
     "@mikro-orm/sql": "npm:^7.0.14"
@@ -1249,7 +1249,7 @@ __metadata:
       optional: true
     vite-plugin-node-polyfills:
       optional: true
-  checksum: 10c0/c2238b96ef4be0e8c3384ca205ba80cb9b54e2c8e92d09c6d85f5fba0de316bfff642e899fbac874869ff32f50cac0b74bccbfeaec0d542f740f4c16384c832e
+  checksum: 10c0/c94c81eadf69547987a715002980f72f0a774f57618d0b0db649b4d3981826339ead7084e905872d1a3b595d126b82587176d64f4da088473c36a60fa281661e
   languageName: node
   linkType: hard
 
@@ -1523,7 +1523,7 @@ __metadata:
     "@types/node-fetch": "npm:^2.6.13"
     "@typescript-eslint/rule-tester": "npm:^8.50.0"
     "@vitest/coverage-v8": "npm:4.0.15"
-    data-of-loathing: "npm:^3.2.2"
+    data-of-loathing: "npm:^4.3.1"
     entities: "npm:^7.0.0"
     eslint: "npm:^9.39.2"
     jiti: "npm:^2.6.1"
@@ -2211,7 +2211,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kysely@npm:0.28.17, kysely@npm:^0.28.17":
+"kysely@npm:0.29.2":
+  version: 0.29.2
+  resolution: "kysely@npm:0.29.2"
+  checksum: 10c0/ed2c4b438fc685def6ce15f1cc8a35192903fa0dd74ee84d959cbd61b3bc8c13e24618aeaf0495298f99f84024181e91d4506b74bec38b7ec325a733dff01dad
+  languageName: node
+  linkType: hard
+
+"kysely@npm:^0.28.17":
   version: 0.28.17
   resolution: "kysely@npm:0.28.17"
   checksum: 10c0/70573292d8d60a1e29be9b432c1b25fe21d4806ecd5e9859b5ba8d2af799769878f4b3d91731ffe3e03744c7291476fe843640d31741f3637e20c3c49afea3c5
