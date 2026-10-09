@@ -10,17 +10,24 @@ import {
   Path,
   Skill,
 } from "data-of-loathing";
+import { randomUUID } from "crypto";
 import fs from "fs/promises";
 import { join } from "path";
 
 const DATA_LOCATION = join(import.meta.dirname, "..", "data");
 
+// several eslint processes can import data at once while others read it
+async function writeFileAtomic(path: string, data: string) {
+  const tempPath = `${path}.${randomUUID()}.tmp`;
+  try {
+    await fs.writeFile(tempPath, data);
+    await fs.rename(tempPath, path);
+  } finally {
+    await fs.rm(tempPath, { force: true });
+  }
+}
+
 async function importData(requestedRevision?: number) {
-  const client = createClient();
-  await client.load();
-
-  const em = client.query;
-
   if (requestedRevision !== undefined) {
     const localRevisionPath = `${DATA_LOCATION}/revision.json`;
     try {
@@ -30,6 +37,11 @@ async function importData(requestedRevision?: number) {
       // no local revision file yet
     }
   }
+
+  const client = createClient();
+  await client.load();
+
+  const em = client.query;
 
   const [classes, effects, familiars, items, locations, monsters, paths, skills, meta] =
     await Promise.all([
@@ -51,16 +63,17 @@ async function importData(requestedRevision?: number) {
   await fs.mkdir(DATA_LOCATION, { recursive: true });
 
   await Promise.all([
-    fs.writeFile(`${DATA_LOCATION}/classes.json`, JSON.stringify(named(classes))),
-    fs.writeFile(`${DATA_LOCATION}/effects.json`, JSON.stringify(namedWithAmbiguous(effects))),
-    fs.writeFile(`${DATA_LOCATION}/familiars.json`, JSON.stringify(named(familiars))),
-    fs.writeFile(`${DATA_LOCATION}/items.json`, JSON.stringify(namedWithAmbiguous(items))),
-    fs.writeFile(`${DATA_LOCATION}/locations.json`, JSON.stringify(named(locations))),
-    fs.writeFile(`${DATA_LOCATION}/monsters.json`, JSON.stringify(namedWithAmbiguous(monsters))),
-    fs.writeFile(`${DATA_LOCATION}/paths.json`, JSON.stringify(named(paths))),
-    fs.writeFile(`${DATA_LOCATION}/skills.json`, JSON.stringify(namedWithAmbiguous(skills))),
-    fs.writeFile(`${DATA_LOCATION}/revision.json`, JSON.stringify(meta?.lastRevision ?? 0)),
+    writeFileAtomic(`${DATA_LOCATION}/classes.json`, JSON.stringify(named(classes))),
+    writeFileAtomic(`${DATA_LOCATION}/effects.json`, JSON.stringify(namedWithAmbiguous(effects))),
+    writeFileAtomic(`${DATA_LOCATION}/familiars.json`, JSON.stringify(named(familiars))),
+    writeFileAtomic(`${DATA_LOCATION}/items.json`, JSON.stringify(namedWithAmbiguous(items))),
+    writeFileAtomic(`${DATA_LOCATION}/locations.json`, JSON.stringify(named(locations))),
+    writeFileAtomic(`${DATA_LOCATION}/monsters.json`, JSON.stringify(namedWithAmbiguous(monsters))),
+    writeFileAtomic(`${DATA_LOCATION}/paths.json`, JSON.stringify(named(paths))),
+    writeFileAtomic(`${DATA_LOCATION}/skills.json`, JSON.stringify(namedWithAmbiguous(skills))),
   ]);
+  // written last so a process that sees the new revision also sees the new data
+  await writeFileAtomic(`${DATA_LOCATION}/revision.json`, JSON.stringify(meta?.lastRevision ?? 0));
 }
 
 export async function verifyConstantsSinceRevision(requestedRevision?: number) {
